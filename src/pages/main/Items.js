@@ -1,106 +1,72 @@
-import React, {Component} from 'react';
-import {View} from 'react-native';
-import {Container, Fab, Icon, List} from 'native-base';
+import React from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { FAB } from 'react-native-paper';
+import { connect } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import MainPageHeader from '../../components/MainPageHeader';
 import ListView from '../../components/ListView';
-import {Actions} from 'react-native-router-flux';
-import Loader from '../../components/Loader';
-import {connect} from 'react-redux';
-import Logo from '../../components/Logo';
 import EmptyListPlaceHolder from '../../components/EmptyListPlaceHolder';
-import {getCurrency} from '../../utils/currencies.utils';
-import {formatCurrency} from '../../utils/redux.form.utils';
-import PageHeader from '../../components/MainPageHeader';
+import Loader from '../../components/Loader';
+import { getCurrency } from '../../utils/currencies.utils';
+import { formatCurrency } from '../../utils/redux.form.utils';
 
-/**
- * Component that renders the items list
- */
-class Items extends Component<{}> {
-    render() {
-        const {getItems, getUser: {userDetails}} = this.props;
-        const currency = getCurrency(userDetails.base_currency);
-        return (
-            <Container>
-                {getItems.isLoading && <Loader/>}
-                <PageHeader title={'Items'}/>
-                <View style={{flex: 1}}>
-                    {this.renderItemsList(getItems.itemsList || [], currency)}
-                    <Fab
-                        style={{backgroundColor: '#5067FF'}}
-                        position="bottomRight"
-                        onPress={() => {
-                            this.addNewItem();
-                        }}>
-                        <Icon name="add"/>
-                    </Fab>
-                </View>
-            </Container>
-        );
-    };
+const Items = ({ getItems, getUser }) => {
+  const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
+  const currency = getCurrency(getUser.userDetails.base_currency);
+  const items = getItems.itemsList || [];
 
-    /**
-     * called on pressing add button
-     * opens item form page with null to indicate adding a new item
-     */
-    addNewItem() {
-        Actions.itemForm({item: null});
-    }
+  const renderItem = ({ item }) => (
+    <ListView
+      title={item.name}
+      subtitle={item.description}
+      right={formatCurrency(item.price, currency)}
+      handleClickEvent={() => navigation.navigate('ItemForm', { item })}
+    />
+  );
 
-    /**
-     * called on pressing add button
-     * opens item form page with an item object to indicate editing an existing item
-     *
-     * @param item
-     */
-    editItem(item) {
-        Actions.itemForm({item: item});
-    }
+  return (
+    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
+      {getItems.isLoading && <Loader />}
+      <MainPageHeader title="Items" />
+      <FlatList
+        contentContainerStyle={styles.listContent}
+        data={items}
+        renderItem={renderItem}
+        keyExtractor={(item) => item._id}
+        ListEmptyComponent={() => (
+          <EmptyListPlaceHolder message="No hay productos registrados." />
+        )}
+      />
+      <FAB
+        icon="plus"
+        style={[styles.fab, { bottom: 16 + insets.bottom }]}
+        onPress={() => navigation.navigate('ItemForm', { item: null })}
+      />
+    </View>
+  );
+};
 
-    /**
-     * Dynamically maps item list to list component
-     *
-     * @param itemsList
-     * @param currency
-     * @returns {*}
-     */
-    renderItemsList(itemsList, currency) {
-        return (<List
-            ListEmptyComponent={
-                <EmptyListPlaceHolder
-                    type={'item'}
-                    message={'No items found.\nPress the plus button to add new items.'}/>}
-            dataArray={itemsList}
-            renderRow={
-                (item) =>
-                    <ListView
-                        title={item.name}
-                        subtitle={item.description}
-                        right={formatCurrency(item.price, currency)}
-                        ListEmptyComponent={Logo}
-                        handleClickEvent={
-                            () => {
-                                this.editItem(item);
-                            }
-                        }/>
-            }
-            keyExtractor={(item, index) => index.toString()}>
-        </List>);
-    }
-}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  listContent: {
+    paddingBottom: 120,
+  },
+  fab: {
+    position: 'absolute',
+    right: 16,
+    bottom: 16,
+  },
+});
 
-/**
- * map props to item reducer to get items list
- * map props to user reducer to get base currency
- *
- * @param state
- * @returns {{getItems: getItems, getUser: getUser}}
- */
 const mapStateToProps = (state) => ({
-    getItems: state.itemReducer.getItems,
-    getUser: state.userReducer.getUser,
+  getItems: state.itemReducer.getItems,
+  getUser: state.userReducer.getUser,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-    dispatch,
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Items);
+export default connect(mapStateToProps)(Items);

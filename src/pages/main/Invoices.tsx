@@ -1,10 +1,12 @@
 import React, { useMemo } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View, ListRenderItem } from 'react-native';
 import { FAB } from 'react-native-paper';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import moment from 'moment';
+import { RootStackParamList, RootState, Invoice, Customer } from '../../types';
 
 import MainPageHeader from '../../components/MainPageHeader';
 import ListView from '../../components/ListView';
@@ -14,30 +16,38 @@ import { getCurrency } from '../../utils/currencies.utils';
 import { formatCurrency } from '../../utils/redux.form.utils';
 import { zeroPad } from '../../utils/general.utils';
 
-const Invoices = ({ getInvoices, getCustomers, getUser }) => {
-  const navigation = useNavigation();
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+type Props = PropsFromRedux;
+
+const Invoices: React.FC<Props> = ({ getInvoices, getCustomers, getUser }) => {
+  const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
   const invoices = getInvoices.invoicesList || [];
   const customers = getCustomers.customersList || [];
   const currency = getCurrency(getUser.userDetails.base_currency);
 
   const customerMap = useMemo(() => {
-    const map = {};
-    customers.forEach((customer) => {
+    const map: Record<string, string> = {};
+    customers.forEach((customer: Customer) => {
       map[customer._id] = customer.name;
     });
     return map;
   }, [customers]);
 
-  const renderItem = ({ item }) => (
-    <ListView
-      title={customerMap[item.customer] || 'Cliente'}
-      subtitle={item.number}
-      right={formatCurrency(item.total, currency)}
-      rightSub={moment(item.issued).format('DD/MM/YYYY')}
-      handleClickEvent={() => navigation.navigate('InvoiceForm', { invoice: item })}
-    />
-  );
+  const renderItem: ListRenderItem<Invoice> = ({ item }) => {
+    const customerId = typeof item.customer === 'string' ? item.customer : item.customer._id;
+    return (
+      <ListView
+        title={customerMap[customerId] || 'Cliente'}
+        subtitle={item.number}
+        right={formatCurrency(item.total, currency)}
+        rightSub={moment(item.issued).format('DD/MM/YYYY')}
+        handleClickEvent={() => navigation.navigate('InvoiceForm', { invoice: item })}
+      />
+    );
+  };
 
   const handleAddInvoice = () => {
     const newNumber = zeroPad((invoices?.length || 0) + 1, 8);
@@ -73,14 +83,16 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     right: 16,
-    bottom: 16,
   },
 });
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: RootState) => ({
   getInvoices: state.invoiceReducer.getInvoices,
   getCustomers: state.customerReducer.getCustomers,
   getUser: state.userReducer.getUser,
 });
 
-export default connect(mapStateToProps)(Invoices);
+const connector = connect(mapStateToProps);
+
+export default connector(Invoices);
+

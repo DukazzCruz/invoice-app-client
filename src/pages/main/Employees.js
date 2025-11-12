@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { FAB } from 'react-native-paper';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -9,43 +9,47 @@ import MainPageHeader from '../../components/MainPageHeader';
 import ListView from '../../components/ListView';
 import EmptyListPlaceHolder from '../../components/EmptyListPlaceHolder';
 import Loader from '../../components/Loader';
-import { getCurrency } from '../../utils/currencies.utils';
-import { formatCurrency } from '../../utils/redux.form.utils';
+import { getEmployeesList } from '../../actions/employee.actions';
 
-const Customers = ({ getCustomers, getUser }) => {
+const Employees = ({ getEmployees }) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const insets = useSafeAreaInsets();
-  const currency = getCurrency(getUser.userDetails.base_currency);
-  const customers = getCustomers.customersList || [];
+  const employees = getEmployees.employeesList || [];
+
+  useEffect(() => {
+    dispatch(getEmployeesList());
+  }, [dispatch]);
 
   const renderItem = ({ item }) => (
     <ListView
       title={item.name}
-      subtitle={`${item.number_invoices || 0} facturas`}
-      right={formatCurrency(item.total, currency)}
+      subtitle={item.role}
+      right={item.email}
+      rightSub={item.active ? 'Activo' : 'Inactivo'}
       handleClickEvent={() =>
-        navigation.navigate('CustomerForm', { customer: item })
+        navigation.navigate('EmployeeForm', { employee: item })
       }
     />
   );
 
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
-      {getCustomers.isLoading && <Loader />}
-      <MainPageHeader title="Clientes" />
+      {getEmployees.isLoading && <Loader />}
+      <MainPageHeader title="Empleados" />
       <FlatList
         contentContainerStyle={styles.listContent}
-        data={customers}
+        data={employees}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
         ListEmptyComponent={() => (
-          <EmptyListPlaceHolder message="No hay clientes registrados." />
+          <EmptyListPlaceHolder message="No hay empleados registrados." />
         )}
       />
       <FAB
         icon="plus"
         style={[styles.fab, { bottom: 16 + insets.bottom }]}
-        onPress={() => navigation.navigate('CustomerForm', { customer: null })}
+        onPress={() => navigation.navigate('EmployeeForm', { employee: null })}
       />
     </View>
   );
@@ -62,13 +66,12 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     right: 16,
-    bottom: 16,
   },
 });
 
 const mapStateToProps = (state) => ({
-  getCustomers: state.customerReducer.getCustomers,
-  getUser: state.userReducer.getUser,
+  getEmployees: state.employeeReducer.getEmployees,
 });
 
-export default connect(mapStateToProps)(Customers);
+export default connect(mapStateToProps)(Employees);
+
