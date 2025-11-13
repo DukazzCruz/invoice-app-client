@@ -13,14 +13,22 @@ import {
   required,
 } from '../../utils/redux.form.utils';
 
-const ItemsFieldArray = ({
+interface ItemsFieldArrayProps {
+  fields: any; // You can replace 'any' with actual type if available
+  change: any; // You can replace 'any' with actual type if available
+  optionsArray?: Array<any>; // Replace 'any' with the item type if defined
+  meta: { error?: any; touched?: any };
+  currency?: any;
+}
+
+const ItemsFieldArray: React.FC<ItemsFieldArrayProps> = ({
   fields,
   change,
   optionsArray = [],
   meta: { error, touched },
   currency,
 }) => {
-  const computeSubtotal = (itemId, quantity) => {
+  const computeSubtotal = (itemId: string, quantity: number) => {
     const selectedItem = optionsArray.find((option) => option._id === itemId);
     if (!selectedItem) {
       return null;
@@ -29,7 +37,7 @@ const ItemsFieldArray = ({
     return parsedQuantity * Number(selectedItem.price || 0);
   };
 
-  const handleItemChange = (fieldName, index, value) => {
+  const handleItemChange = (fieldName: string, index: number, value: string) => {
     change(`${fieldName}.item`, value);
     const selectedQuantity = fields.get(index)?.quantity || 0;
     const subtotal = computeSubtotal(value, selectedQuantity);
@@ -38,7 +46,7 @@ const ItemsFieldArray = ({
     }
   };
 
-  const handleQuantityChange = (fieldName, index, quantity) => {
+  const handleQuantityChange = (fieldName: string, index: number, quantity: number) => {
     change(`${fieldName}.quantity`, quantity);
     const selectedItem = fields.get(index)?.item;
     const subtotal = computeSubtotal(selectedItem, quantity);
@@ -49,7 +57,7 @@ const ItemsFieldArray = ({
 
   return (
     <View>
-      {fields.map((name, index) => (
+      {fields.map((name: string, index: number) => (
         <Card key={name} style={styles.card}>
           <Card.Title
             title={`Item ${index + 1}`}
@@ -65,7 +73,7 @@ const ItemsFieldArray = ({
               placeHolder="Selecciona un item..."
               optionsArray={optionsArray}
               validate={[required]}
-              onValueChange={(value) => handleItemChange(name, index, value)}
+              onValueChange={(value: string) => handleItemChange(name, index, value)}
             />
             <Field
               name={`${name}.quantity`}
@@ -73,7 +81,7 @@ const ItemsFieldArray = ({
               label="Cantidad"
               keyboardType="numeric"
               validate={[required, integer]}
-              onValueChange={(value) => handleQuantityChange(name, index, value)}
+              onValueChange={(value: number) => handleQuantityChange(name, index, value)}
             />
             <Field
               name={`${name}.subtotal`}
@@ -81,9 +89,9 @@ const ItemsFieldArray = ({
               label="Subtotal"
               keyboardType="numeric"
               editable={false}
-              valueExtractor={(val) => val}
-              format={(value) => formatCurrency(value, currency)}
-              normalize={(value) => normalizeCurrency(value)}
+              valueExtractor={(val: any) => val}
+              format={(value: string) => formatCurrency(value, currency)}
+              normalize={(value: string) => normalizeCurrency(value)}
               validate={[required, number]}
             />
           </Card.Content>

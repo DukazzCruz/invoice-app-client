@@ -66,7 +66,7 @@ export const editInvoice = (payload: EditInvoicePayload) => {
       if (response.success) {
         dispatch({
           type: 'EDIT_INVOICE_SUCCESS',
-          payload: response.responseBody,
+          payload: (response.responseBody as any)?.invoice,
         });
         return response;
       } else {
@@ -92,10 +92,11 @@ export const sendInvoiceByEmail = (payload: SendInvoicePayload) => {
       });
       const paymentSessionResponse = await fetchApi('/payment/new', 'POST', payload, 200, token);
       if (paymentSessionResponse.success) {
+        const payment = (paymentSessionResponse.responseBody as any)?.payment;
         const emailResponse = await fetchApi(
           '/invoice/send',
           'POST',
-          (paymentSessionResponse.responseBody as any)?.value,
+          { payment: payment?._id },
           200,
           token
         );
