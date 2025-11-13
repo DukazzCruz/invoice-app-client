@@ -1,0 +1,66 @@
+{
+  "common": {
+    "save": "Save",
+    "close": "Close",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "back": "Back"
+  },
+  "screens": {
+    "home": "Home",
+    "profile": "Profile",
+    "invoices": "Invoices",
+    "customers": "Customers",
+    "items": "Items",
+    "invoiceForm": "Invoice"
+  },
+  "fields": {
+    "date": "Date",
+    "customer": "Customer",
+    "item": "Item",
+    "quantity": "Quantity",
+    "price": "Price",
+    "total": "Total",
+    "discount": "Discount",
+    "subtotal": "Subtotal",
+    "currency": "Currency",
+    "description": "Description",
+    "email": "Email",
+    "password": "Password",
+    "company": "Company Name",
+    "companyPlaceholder": "My Company",
+    "phone": "Phone",
+    "phonePlaceholder": "+1 (123) 456-7890",
+    "address": "Address",
+    "addressPlaceholder": "123 Main Street",
+    "base_currency": "Base Currency",
+    "currencyPlaceholder": "Select currency",
+    "language": "Language",
+    "invoiceNumber": "Invoice Number",
+    "issued": "Issued",
+    "due": "Due",
+    "to": "To"
+  },
+  "actions": {
+    "add": "Add",
+    "create": "Create",
+    "update": "Update",
+    "search": "Search",
+    "select": "Select",
+    "login": "Login",
+    "logout": "Logout",
+    "calculateTotal": "Calculate Total"
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Invalid email address",
+    "minLength": "Must be at least {{min}} characters",
+    "passwordMismatch": "Passwords do not match"
+  },
+  "messages": {
+    "profileUpdated": "Profile updated successfully"
+  }
+}

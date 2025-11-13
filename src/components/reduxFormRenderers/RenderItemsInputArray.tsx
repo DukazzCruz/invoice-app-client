@@ -11,13 +11,20 @@ interface RenderItemsInputArrayProps extends WrappedFieldArrayProps<any> {
   optionsArray?: ItemType[];
   currency: string;
   change: (field: string, value: any) => void;
+  onAddNewItem?: () => void;
 }
 
 /**
  * Renders an array of field tuples for redux-form. Each tuple has an item selector and a quantity input field
  */
-const renderItemsInputArray: React.FC<RenderItemsInputArrayProps> = (field) => {
-  const { fields, change, optionsArray = [], meta: { error, touched }, currency } = field;
+const renderItemsInputArray: React.FC<RenderItemsInputArrayProps> = ({
+  fields,
+  change,
+  optionsArray = [],
+  meta: { error, touched },
+  currency,
+  onAddNewItem,
+}) => {
   return (
     <View style={styles.container}>
       {fields.map((item: any, index: number) => (
@@ -27,9 +34,11 @@ const renderItemsInputArray: React.FC<RenderItemsInputArrayProps> = (field) => {
               name={`${item}.item`}
               component={renderSelectOption}
               optionsArray={optionsArray}
-              iosHeader="Select Item"
-              placeHolder={'Select an item...'}
-              placeholder={'Item'}
+              modalTitle="Productos"
+              addButtonLabel="Agregar producto"
+              onAddNew={onAddNewItem}
+              placeHolder={'Selecciona un producto...'}
+              placeholder={'Producto'}
               validate={[required]}
               onChange={(value: any) => {
                 const quantity = Number((fields.get(index) as any)?.quantity || 0);
@@ -83,7 +92,7 @@ const renderItemsInputArray: React.FC<RenderItemsInputArrayProps> = (field) => {
       <Card style={styles.addCard}>
         <Card.Actions>
           <Button icon="plus" onPress={() => fields.push({})}>
-            Add Item
+            Agregar línea
           </Button>
         </Card.Actions>
       </Card>

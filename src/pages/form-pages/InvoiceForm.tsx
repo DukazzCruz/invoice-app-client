@@ -17,11 +17,13 @@ import { editInvoice, getInvoicesList, sendInvoiceByEmail } from '../../actions/
 import Loader from '../../components/Loader';
 import renderTextInput from '../../components/reduxFormRenderers/RenderTextInput';
 import renderItemsTextInputArray from '../../components/reduxFormRenderers/RenderItemsInputArray';
+import RenderDatePicker from '../../components/reduxFormRenderers/RenderDatePicker';
 import renderSelectOption from '../../components/reduxFormRenderers/RenderSelectOption';
-import renderDatePicker from '../../components/reduxFormRenderers/RenderDatePicker';
 import { getCurrency } from '../../utils/currencies.utils';
 import InnerPageHeader from '../../components/InnerPageHeader';
 import { RootStackParamList, RootState, Invoice, InvoiceItem } from '../../types';
+import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 // Prevent input clearing by keeping default dates stable across renders
 const DEFAULT_ISSUED = new Date();
@@ -48,6 +50,7 @@ interface InvoiceFormProps extends InjectedFormProps<InvoiceFormValues> {
   subtotalValue: string;
   change: typeof change;
   route: InvoiceFormRouteProp;
+  navigation: any;
 }
 
 /**
@@ -97,7 +100,7 @@ class InvoiceForm extends Component<InvoiceFormProps> {
       if (!response || !response.success) {
         throw response;
       } else {
-        Alert.alert('Facturas', 'Lista de facturas actualizada correctamente.');
+        Alert.alert(t('alerts.invoices'), t('alerts.invoicesListUpdated'));
         return response;
       }
     } catch (e) {
@@ -126,7 +129,7 @@ class InvoiceForm extends Component<InvoiceFormProps> {
         if (!response || !response.success) {
           throw response;
         } else {
-          Alert.alert('Facturas', 'Factura enviada por email correctamente.');
+          Alert.alert(t('alerts.invoices'), t('alerts.invoiceSentByEmail'));
           return response;
         }
       }
@@ -140,8 +143,9 @@ class InvoiceForm extends Component<InvoiceFormProps> {
     this.sendInvoiceByEmail(values);
   };
 
-  onSubmit = (values: InvoiceFormValues) => {
-    this.sendInvoiceData(values);
+  onSubmit = async (values: InvoiceFormValues) => {
+    await this.sendInvoiceData(values);
+    this.props.navigation.navigate('Home');
   };
 
   /**
@@ -161,29 +165,31 @@ class InvoiceForm extends Component<InvoiceFormProps> {
   };
 
   render() {
-    const { handleSubmit, editInvoice, getItems, getCustomers, subtotalValue, change, getUser: { userDetails } } = this.props;
+    const { handleSubmit, editInvoice, getItems, getCustomers, subtotalValue, change, getUser: { userDetails }, navigation } = this.props;
     const currency = getCurrency(userDetails.base_currency);
+    const { t } = useTranslation();
 
     return (
       <View style={styles.container}>
         {editInvoice.isLoading && <Loader />}
-        <InnerPageHeader title={'Factura'} />
+        <InnerPageHeader title={t('screens.invoiceForm')} />
         <ScrollView contentContainerStyle={styles.content}>
           <Card style={styles.card}>
             <Card.Content>
               <Field
                 name={'number'}
                 keyboardType={'default'}
-                placeholder={'INV0000'}
+                placeholder={t('placeholders.invoiceNumber')}
                 validate={[required]}
                 component={renderTextInput}
+                label={t('fields.invoiceNumber')}
               />
               <Field
-                component={renderDatePicker}
+                component={RenderDatePicker}
                 keyboardType="default"
                 name={'issued'}
-                label={'Issued: '}
-                placeholder="YYYY/MM/DD"
+                label={t('fields.issued')}
+                placeholder={t('placeholders.date')}
                 validate={[required]}
               />
             </Card.Content>
@@ -193,19 +199,20 @@ class InvoiceForm extends Component<InvoiceFormProps> {
               <Field
                 name={`customer`}
                 component={renderSelectOption}
-                iosHeader="Select Customer"
-                placeHolder={'Select a customer...'}
+                iosHeader={t('headers.selectCustomer')}
+                placeHolder={t('placeholders.selectCustomer')}
                 optionsArray={(getCustomers.customersList || [])}
-                label={'To: '}
+                label={t('fields.customer')}
                 validate={[required]}
-                placeholder={'Customer'}
+                placeholder={t('placeholders.customer')}
+                onAddNew={() => navigation.navigate('CustomerForm')}
               />
               <Field
-                component={renderDatePicker}
+                component={RenderDatePicker}
                 keyboardType="default"
                 name={'due'}
-                label={'Due: '}
-                placeholder="YYYY/MM/DD"
+                label={t('fields.due')}
+                placeholder={t('placeholders.date')}
                 validate={[required]}
               />
             </Card.Content>
@@ -225,7 +232,7 @@ class InvoiceForm extends Component<InvoiceFormProps> {
                 onPress={handleSubmit(this.calculateSubTotal)}
                 style={styles.button}
               >
-                Calcular Total
+                {t('buttons.calculateTotal')}
               </Button>
             </Card.Content>
           </Card>
@@ -234,8 +241,8 @@ class InvoiceForm extends Component<InvoiceFormProps> {
               <Field
                 name={'subtotal'}
                 keyboardType={'numeric'}
-                placeholder={'0'}
-                label={'Subtotal'}
+                placeholder={t('placeholders.subtotal')}
+                label={t('fields.subtotal')}
                 textAlign={'right'}
                 defaultValue={'0'}
                 editable={false}
@@ -247,8 +254,8 @@ class InvoiceForm extends Component<InvoiceFormProps> {
               <Field
                 name={'discount'}
                 keyboardType={'numeric'}
-                placeholder={'0'}
-                label={'Discount'}
+                placeholder={t('placeholders.discount')}
+                label={t('fields.discount')}
                 textAlign={'right'}
                 onChange={(value: any) => {
                   const normalized = normalizeCurrency(value);
@@ -262,8 +269,8 @@ class InvoiceForm extends Component<InvoiceFormProps> {
               <Field
                 name={'total'}
                 keyboardType={'numeric'}
-                placeholder={'0'}
-                label={'Total'}
+                placeholder={t('placeholders.total')}
+                label={t('fields.total')}
                 textAlign={'right'}
                 editable={false}
                 format={(value: any) => formatCurrency(value, currency)}
@@ -280,13 +287,13 @@ class InvoiceForm extends Component<InvoiceFormProps> {
             onPress={handleSubmit(this.onSubmit)}
             style={styles.saveButton}
           >
-            Guardar
+            {t('buttons.save')}
           </Button>
-          <FAB
+          {/* <FAB
             icon="send"
             style={styles.fab}
             onPress={handleSubmit(this.onSendInvoice)}
-          />
+          /> */}
         </View>
       </View>
     );

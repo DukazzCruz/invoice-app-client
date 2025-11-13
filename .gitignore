@@ -58,3 +58,9 @@ buck-out/
 # CocoaPods
 /ios/Pods/
 .expo
+android/
+.gitignore
+.gitignore
+
+# iOS build artifacts
+ios/

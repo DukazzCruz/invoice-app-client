@@ -1,7 +1,6 @@
-import React, { useMemo } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { HelperText, Text } from 'react-native-paper';
+import React, { useMemo, useState, useCallback } from 'react';
+import { FlatList, View, StyleSheet, Dimensions } from 'react-native';
+import { HelperText, List, Modal, Portal, Searchbar, TextInput, Button, IconButton, Text } from 'react-native-paper';
 import { WrappedFieldProps } from 'redux-form';
 
 interface Option {
@@ -17,82 +16,127 @@ interface RenderSelectOptionProps extends WrappedFieldProps {
   iosHeader?: string;
   placeholder?: string;
   onChange?: (value: any) => void;
+  onAddNew?: () => void; 
 }
 
-/**
- * Renders a native-base Picker component with options retrieved from a specified array of [{_id,_name,...}].
- */
+const { width, height } = Dimensions.get('window');
+
 const RenderSelectOption: React.FC<RenderSelectOptionProps> = ({
   meta: { touched, error },
-  input: { onChange, value },
+  input: { onChange, value, ...restInput },
   placeHolder,
   label,
   optionsArray = [],
   onChange: customOnChange,
-  ...pickerProps
+  onAddNew, 
+  ...rest
 }) => {
+  const [visible, setVisible] = useState(false);
+  const [query, setQuery] = useState('');
+
+  const selected = useMemo(() => optionsArray.find(o => o._id === value) || null, [optionsArray, value]);
+
+  const data = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return optionsArray;
+    return optionsArray.filter(o => o.name.toLowerCase().includes(q));
+  }, [optionsArray, query]);
+
+  const handleSelect = useCallback((val: any) => {
+    onChange(val);
+    if (typeof customOnChange === 'function') customOnChange(val);
+    setVisible(false);
+  }, [onChange, customOnChange]);
+
+  const displayText = selected?.name ?? '';
   const hasError = touched && Boolean(error);
-  const selectedValue = value ?? '';
-
-  const pickerItems = useMemo(() => {
-    const items = optionsArray.map((option) => (
-      <Picker.Item key={option._id} value={option._id} label={option.name} />
-    ));
-    return [
-      <Picker.Item
-        key="__placeholder"
-        value=""
-        label={placeHolder || 'Selecciona una opción'}
-      />,
-      ...items,
-    ];
-  }, [optionsArray, placeHolder]);
-
-  const handleChange = (val: string) => {
-    const nextValue = val === '' ? null : val;
-    onChange(nextValue);
-    if (typeof customOnChange === 'function') {
-      customOnChange(nextValue);
-    }
-  };
 
   return (
-    <View style={styles.container}>
-      {label ? <Text style={styles.label}>{label}</Text> : null}
-      <View style={[styles.pickerWrapper, hasError && styles.pickerError]}>
-        <Picker
-          selectedValue={selectedValue}
-          onValueChange={handleChange}
-          dropdownIconColor="#555"
-          {...pickerProps}
-        >
-          {pickerItems}
-        </Picker>
-      </View>
+    <View>
+      <TextInput
+        mode="outlined"
+        label={label}
+        placeholder={placeHolder || 'Selecciona una opción'}
+        value={displayText}
+        editable={false}
+        right={<TextInput.Icon icon="menu-down" onPress={() => setVisible(true)} />}
+        onPressIn={() => setVisible(true)}
+        error={hasError}
+        {...restInput}
+        {...rest}
+      />
       <HelperText type="error" visible={hasError}>
         {error}
       </HelperText>
+      <Portal>
+        <Modal 
+          visible={visible} 
+          onDismiss={() => setVisible(false)} 
+          contentContainerStyle={styles.modalContainer}
+        >
+          <View style={styles.modalHeader}>
+            <IconButton icon="close" onPress={() => setVisible(false)} />
+            <Text style={styles.modalTitle}>{label || 'Seleccionar'}</Text>
+            {onAddNew && (
+              <IconButton 
+                icon="plus" 
+                onPress={() => {
+                  setVisible(false);
+                  onAddNew();
+                }} 
+              />
+            )}
+          </View>
+          <Searchbar
+            placeholder="Buscar..."
+            value={query}
+            onChangeText={setQuery}
+            style={styles.search}
+          />
+          <FlatList
+            data={data}
+            keyExtractor={(item) => item._id}
+            keyboardShouldPersistTaps="handled"
+            renderItem={({ item }) => (
+              <List.Item
+                title={item.name}
+                onPress={() => handleSelect(item._id)}
+                right={() => (item._id === value ? <List.Icon icon="check" /> : null)}
+              />
+            )}
+            style={styles.list}
+          />
+        </Modal>
+      </Portal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 12,
+  modalContainer: {
+    backgroundColor: 'white',
+    width: width,
+    height: height,
+    margin: 0,
+    padding: 16,
+    paddingTop: 60,
   },
-  label: {
-    fontSize: 14,
-    marginBottom: 4,
-    color: '#444',
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
   },
-  pickerWrapper: {
-    borderWidth: 1,
-    borderColor: '#bbb',
-    borderRadius: 4,
-    overflow: 'hidden',
+  modalTitle: {
+    flex: 1,
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
-  pickerError: {
-    borderColor: '#f32013',
+  search: {
+    marginBottom: 16,
+  },
+  list: {
+    flex: 1,
   },
 });
 

@@ -1,97 +1,61 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { Platform, View } from 'react-native';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { HelperText, TextInput } from 'react-native-paper';
+import React from 'react';
+import { View } from 'react-native';
+import { HelperText } from 'react-native-paper';
+import { DatePickerInput, registerTranslation } from 'react-native-paper-dates';
 import { WrappedFieldProps } from 'redux-form';
+import { useTranslation } from 'react-i18next';
+
+// Register the locale
+registerTranslation('en', {
+  save: 'Save',
+  selectSingle: 'Select date',
+  selectMultiple: 'Select dates',
+  selectRange: 'Select period',
+  notAccordingToDateFormat: (inputFormat) => `Date format must be ${inputFormat}`,
+  mustBeHigherThan: (date) => `Must be later than ${date}`,
+  mustBeLowerThan: (date) => `Must be earlier than ${date}`,
+  mustBeBetween: (startDate, endDate) => `Must be between ${startDate} - ${endDate}`,
+  dateIsDisabled: 'Day is not allowed',
+  previous: 'Previous',
+  next: 'Next',
+  typeInDate: 'Type in date',
+  pickDateFromCalendar: 'Pick date from calendar',
+  close: 'Close',
+  hour: 'Hour',
+  minute: 'Minute',
+});
 
 interface RenderDatePickerProps extends WrappedFieldProps {
-  placeholder?: string;
   label?: string;
-  displayFormat?: (value: Date) => string;
-  minimumDate?: Date;
-  maximumDate?: Date;
-  mode?: 'date' | 'time' | 'datetime';
+  placeholder?: string;
 }
 
-const defaultFormatter = (value: Date): string => {
-  try {
-    return Intl.DateTimeFormat('es-ES', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    }).format(value);
-  } catch {
-    return value.toISOString();
-  }
-};
-
 const RenderDatePicker: React.FC<RenderDatePickerProps> = ({
-  input: { value, onChange, ...restInput },
+  input: { onChange, value, ...restInput },
   meta: { touched, error },
-  placeholder,
   label,
-  displayFormat,
-  minimumDate,
-  maximumDate,
-  mode = 'date',
+  placeholder,
   ...rest
 }) => {
-  const [isPickerVisible, setPickerVisible] = useState(false);
-
-  const dateValue = useMemo(() => {
-    if (!value) {
-      return new Date();
-    }
-    return value instanceof Date ? value : new Date(value);
-  }, [value]);
-
-  const formattedValue = value
-    ? (displayFormat ? displayFormat(dateValue) : defaultFormatter(dateValue))
-    : '';
-
-  const handleChange = useCallback(
-    (_event: DateTimePickerEvent, selectedDate?: Date) => {
-      if (Platform.OS === 'android') {
-        setPickerVisible(false);
-      }
-      if (selectedDate) {
-        onChange(selectedDate);
-      }
-    },
-    [onChange],
-  );
-
-  const openPicker = useCallback(() => {
-    setPickerVisible(true);
-  }, []);
+  const { t } = useTranslation();
+  const date = value ? new Date(value) : undefined;
 
   return (
     <View>
-      <TextInput
+      <DatePickerInput
         mode="outlined"
-        label={label}
-        placeholder={placeholder}
-        value={formattedValue}
-        editable={false}
-        pointerEvents="none"
-        right={<TextInput.Icon icon="calendar" onPress={openPicker} forceTextInputFocus={false} />}
-        onPressIn={openPicker}
-        showSoftInputOnFocus={false}
+        label={label ? t(label) : undefined}
+        placeholder={placeholder ? t(placeholder) : undefined}
+        value={date}
+        onChange={(d) => onChange(d?.toISOString())}
+        inputMode="start"
+        locale="en"
+        error={touched && !!error}
         {...restInput}
         {...rest}
       />
-      {isPickerVisible && (
-        <DateTimePicker
-          value={dateValue}
-          mode={mode}
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleChange}
-          minimumDate={minimumDate}
-          maximumDate={maximumDate}
-        />
-      )}
-      <HelperText type="error" visible={Boolean(touched && error)}>
-        {error}
+      <HelperText type="error" visible={touched && !!error}>
+        {error && t(error)}
       </HelperText>
     </View>
   );

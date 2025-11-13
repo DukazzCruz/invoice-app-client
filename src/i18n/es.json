@@ -1,0 +1,66 @@
+{
+  "common": {
+    "save": "Guardar",
+    "close": "Cerrar",
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar",
+    "back": "Atrás"
+  },
+  "screens": {
+    "home": "Inicio",
+    "profile": "Perfil",
+    "invoices": "Facturas",
+    "customers": "Clientes",
+    "items": "Artículos",
+    "invoiceForm": "Factura"
+  },
+  "fields": {
+    "date": "Fecha",
+    "customer": "Cliente",
+    "item": "Artículo",
+    "quantity": "Cantidad",
+    "price": "Precio",
+    "total": "Total",
+    "discount": "Descuento",
+    "subtotal": "Subtotal",
+    "currency": "Moneda",
+    "description": "Descripción",
+    "email": "Correo",
+    "password": "Contraseña",
+    "company": "Nombre de la Empresa",
+    "companyPlaceholder": "Mi Empresa",
+    "phone": "Teléfono",
+    "phonePlaceholder": "+1 (123) 456-7890",
+    "address": "Dirección",
+    "addressPlaceholder": "123 Calle Principal",
+    "base_currency": "Moneda Base",
+    "currencyPlaceholder": "Seleccionar moneda",
+    "language": "Idioma",
+    "invoiceNumber": "Número de Factura",
+    "issued": "Emitida",
+    "due": "Vencimiento",
+    "to": "Para"
+  },
+  "actions": {
+    "add": "Agregar",
+    "create": "Crear",
+    "update": "Actualizar",
+    "search": "Buscar",
+    "select": "Seleccionar",
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "calculateTotal": "Calcular Total"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "email": "Correo electrónico inválido",
+    "minLength": "Debe tener al menos {{min}} caracteres",
+    "passwordMismatch": "Las contraseñas no coinciden"
+  },
+  "messages": {
+    "profileUpdated": "Perfil actualizado correctamente"
+  }
+}
