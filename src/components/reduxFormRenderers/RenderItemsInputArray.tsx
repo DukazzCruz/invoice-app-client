@@ -6,6 +6,7 @@ import renderTextInput from './RenderTextInput';
 import renderSelectOption from './RenderSelectOption';
 import { formatCurrency, integer, normalizeCurrency, number, required } from '../../utils/redux.form.utils';
 import { Item as ItemType } from '../../types';
+import { useTranslation } from 'react-i18next';
 
 interface RenderItemsInputArrayProps extends WrappedFieldArrayProps<any> {
   optionsArray?: ItemType[];
@@ -25,6 +26,7 @@ const renderItemsInputArray: React.FC<RenderItemsInputArrayProps> = ({
   currency,
   onAddNewItem,
 }) => {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       {fields.map((item: any, index: number) => (
@@ -34,11 +36,11 @@ const renderItemsInputArray: React.FC<RenderItemsInputArrayProps> = ({
               name={`${item}.item`}
               component={renderSelectOption}
               optionsArray={optionsArray}
-              modalTitle="Productos"
-              addButtonLabel="Agregar producto"
+              modalTitle={t('modals.products')}
+              addButtonLabel={t('modals.addProduct')}
               onAddNew={onAddNewItem}
-              placeHolder={'Selecciona un producto...'}
-              placeholder={'Producto'}
+              placeHolder={t('actions.selectItem')}
+              placeholder={t('fields.item')}
               validate={[required]}
               onChange={(value: any) => {
                 const quantity = Number((fields.get(index) as any)?.quantity || 0);
@@ -85,7 +87,7 @@ const renderItemsInputArray: React.FC<RenderItemsInputArrayProps> = ({
           </Card.Content>
           <Card.Actions>
             <IconButton icon="trash-can" onPress={() => fields.remove(index)} accessibilityLabel="Remove item" />
-            <Text>Remove Item</Text>
+            <Text>{t('actions.removeItem')}</Text>
           </Card.Actions>
         </Card>
       ))}

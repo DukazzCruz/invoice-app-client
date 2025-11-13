@@ -1,15 +1,19 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
-const Logo: React.FC = () => (
-  <View style={styles.container}>
-    <Image
-      style={styles.image}
-      source={require('../assets/images/react-logo.png')}
-    />
-    <Text style={styles.title}>Invoice App</Text>
-  </View>
-);
+const Logo: React.FC = () => {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.container}>
+      <Image
+        style={styles.image}
+        source={require('../assets/images/react-logo.png')}
+      />
+      <Text style={styles.title}>{t('appName')}</Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

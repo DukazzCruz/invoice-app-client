@@ -6,6 +6,7 @@ import { connect, ConnectedProps, useDispatch } from 'react-redux';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList, RootState, Employee } from '../../types';
 
 import InnerPageHeader from '../../components/InnerPageHeader';
@@ -34,6 +35,7 @@ const EmployeeForm: React.FC<Props> = ({ editEmployee: editEmployeeState, update
   const dispatch = useDispatch();
   const insets = useSafeAreaInsets();
   const employee = route?.params?.employee;
+  const { t } = useTranslation();
 
   const {
     control,
@@ -104,17 +106,17 @@ const EmployeeForm: React.FC<Props> = ({ editEmployee: editEmployeeState, update
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       {isLoading && <Loader />}
-      <InnerPageHeader title="Empleado" />
+      <InnerPageHeader title={t('screens.employee')} />
       <ScrollView contentContainerStyle={styles.content}>
         <Card>
           <Card.Content>
             <Controller
               control={control}
               name="name"
-              rules={{ required: 'El nombre es requerido', minLength: { value: 2, message: 'El nombre debe tener al menos 2 caracteres' } }}
+              rules={{ required: t('validation.required'), minLength: { value: 2, message: t('validation.minLength', { min: 2 }) } }}
               render={({ field: { onChange, value } }) => (
                 <TextField
-                  label="Nombre"
+                  label={t('fields.name')}
                   value={value}
                   onChangeText={onChange}
                   error={errors.name?.message || ''}
@@ -126,15 +128,15 @@ const EmployeeForm: React.FC<Props> = ({ editEmployee: editEmployeeState, update
               control={control}
               name="email"
               rules={{
-                required: 'El email es requerido',
+                required: t('validation.required'),
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Email inválido',
+                  message: t('validation.email'),
                 },
               }}
               render={({ field: { onChange, value } }) => (
                 <TextField
-                  label="Email"
+                  label={t('fields.email')}
                   value={value}
                   onChangeText={onChange}
                   keyboardType="email-address"
@@ -148,10 +150,10 @@ const EmployeeForm: React.FC<Props> = ({ editEmployee: editEmployeeState, update
             <Controller
               control={control}
               name="role"
-              rules={{ required: 'El rol es requerido', minLength: { value: 2, message: 'El rol debe tener al menos 2 caracteres' } }}
+              rules={{ required: t('validation.required'), minLength: { value: 2, message: t('validation.minLength', { min: 2 }) } }}
               render={({ field: { onChange, value } }) => (
                 <TextField
-                  label="Rol"
+                  label={t('fields.role')}
                   value={value}
                   onChangeText={onChange}
                   error={errors.role?.message || ''}
@@ -162,10 +164,10 @@ const EmployeeForm: React.FC<Props> = ({ editEmployee: editEmployeeState, update
             <Controller
               control={control}
               name="phone"
-              rules={{ minLength: { value: 6, message: 'El teléfono debe tener al menos 6 caracteres' } }}
+              rules={{ minLength: { value: 6, message: t('validation.minLength', { min: 6 }) } }}
               render={({ field: { onChange, value } }) => (
                 <TextField
-                  label="Teléfono"
+                  label={t('fields.phone')}
                   value={value || ''}
                   onChangeText={onChange}
                   keyboardType="phone-pad"
@@ -176,7 +178,7 @@ const EmployeeForm: React.FC<Props> = ({ editEmployee: editEmployeeState, update
 
             {employee && (
               <View style={styles.switchContainer}>
-                <Text>Activo</Text>
+                <Text>{t('fields.active')}</Text>
                 <Controller
                   control={control}
                   name="active"
@@ -193,7 +195,7 @@ const EmployeeForm: React.FC<Props> = ({ editEmployee: editEmployeeState, update
               onPress={handleSubmit(onSubmit)}
               disabled={isLoading}
             >
-              Guardar
+              {t('buttons.save')}
             </Button>
           </Card.Content>
         </Card>

@@ -1,5 +1,6 @@
 // User types
 export interface User {
+  language: any;
   _id: string;
   name: string;
   email: string;
@@ -7,6 +8,8 @@ export interface User {
   phone: string;
   address: string;
   base_currency: string;
+  numberFormat?: 'en' | 'es';
+  dateFormat?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -245,10 +248,10 @@ export type AuthStackParamList = {
 };
 
 export type HomeTabParamList = {
-  Facturas: undefined;
-  Clientes: undefined;
+  Invoices: undefined;
+  Customers: undefined;
   Items: undefined;
-  Empleados: undefined;
+  Employees: undefined;
 };
 
 

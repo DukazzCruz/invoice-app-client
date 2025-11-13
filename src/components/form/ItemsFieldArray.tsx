@@ -2,16 +2,15 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Card, IconButton, Text } from 'react-native-paper';
 import { Field } from 'redux-form';
+import { useTranslation } from 'react-i18next';
 
 import TextField from './TextField';
 import SelectField from './SelectField';
 import {
   formatCurrency,
-  integer,
   normalizeCurrency,
-  number,
-  required,
 } from '../../utils/redux.form.utils';
+import { useValidationRules } from '../../hooks/useValidationRules';
 
 interface ItemsFieldArrayProps {
   fields: any; // You can replace 'any' with actual type if available
@@ -28,6 +27,8 @@ const ItemsFieldArray: React.FC<ItemsFieldArrayProps> = ({
   meta: { error, touched },
   currency,
 }) => {
+  const { t } = useTranslation();
+  const { required: requiredRule, integer: integerRule, number: numberRule } = useValidationRules();
   const computeSubtotal = (itemId: string, quantity: number) => {
     const selectedItem = optionsArray.find((option) => option._id === itemId);
     if (!selectedItem) {
@@ -60,7 +61,7 @@ const ItemsFieldArray: React.FC<ItemsFieldArrayProps> = ({
       {fields.map((name: string, index: number) => (
         <Card key={name} style={styles.card}>
           <Card.Title
-            title={`Item ${index + 1}`}
+            title={`${t('item')} ${index + 1}`}
             right={() => (
               <IconButton icon="delete" onPress={() => fields.remove(index)} />
             )}
@@ -69,30 +70,30 @@ const ItemsFieldArray: React.FC<ItemsFieldArrayProps> = ({
             <Field
               name={`${name}.item`}
               component={SelectField}
-              label="Producto"
-              placeHolder="Selecciona un item..."
+              label={t('product')}
+              placeHolder={t('selectItem')}
               optionsArray={optionsArray}
-              validate={[required]}
+              validate={[requiredRule]}
               onValueChange={(value: string) => handleItemChange(name, index, value)}
             />
             <Field
               name={`${name}.quantity`}
               component={TextField}
-              label="Cantidad"
+              label={t('quantity')}
               keyboardType="numeric"
-              validate={[required, integer]}
+              validate={[requiredRule, integerRule]}
               onValueChange={(value: number) => handleQuantityChange(name, index, value)}
             />
             <Field
               name={`${name}.subtotal`}
               component={TextField}
-              label="Subtotal"
+              label={t('fields.subtotal')}
               keyboardType="numeric"
               editable={false}
               valueExtractor={(val: any) => val}
               format={(value: string) => formatCurrency(value, currency)}
               normalize={(value: string) => normalizeCurrency(value)}
-              validate={[required, number]}
+              validate={[requiredRule, numberRule]}
             />
           </Card.Content>
         </Card>
@@ -103,7 +104,7 @@ const ItemsFieldArray: React.FC<ItemsFieldArrayProps> = ({
         onPress={() => fields.push({})}
         style={styles.addButton}
       >
-        Agregar Item
+        {t('addItem')}
       </Button>
       {touched && error ? <Text style={styles.error}>{error}</Text> : null}
     </View>

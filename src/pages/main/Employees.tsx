@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { FlatList, StyleSheet, View, ListRenderItem } from 'react-native';
-import { FAB } from 'react-native-paper';
+import { FAB, Searchbar } from 'react-native-paper';
 import { connect, ConnectedProps } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, RootState, Employee } from '../../types';
+import { useTranslation } from 'react-i18next';
 
 import MainPageHeader from '../../components/MainPageHeader';
 import ListView from '../../components/ListView';
@@ -22,6 +23,19 @@ const Employees: React.FC<Props> = ({ getEmployees, dispatch }) => {
   const navigation = useNavigation<NavigationProp>();
   const insets = useSafeAreaInsets();
   const employees = getEmployees.employeesList || [];
+  const { t } = useTranslation();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredEmployees = useMemo(() => {
+    if (!searchQuery.trim()) return employees;
+    
+    const query = searchQuery.toLowerCase();
+    return employees.filter((employee: Employee) => 
+      employee.name.toLowerCase().includes(query) ||
+      employee.email.toLowerCase().includes(query) ||
+      employee.role.toLowerCase().includes(query)
+    );
+  }, [employees, searchQuery]);
 
   useEffect(() => {
     dispatch(getEmployeesList() as any);
@@ -32,7 +46,7 @@ const Employees: React.FC<Props> = ({ getEmployees, dispatch }) => {
       title={item.name}
       subtitle={item.role}
       right={item.email}
-      rightSub={item.active ? 'Activo' : 'Inactivo'}
+      rightSub={item.active ? t('active') : t('inactive')}
       handleClickEvent={() =>
         navigation.navigate('EmployeeForm', { employee: item })
       }
@@ -42,14 +56,20 @@ const Employees: React.FC<Props> = ({ getEmployees, dispatch }) => {
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       {getEmployees.isLoading && <Loader />}
-      <MainPageHeader title="Empleados" />
+      <MainPageHeader title={t('screens.employees')} />
+      <Searchbar
+        placeholder={t('placeholders.searchEmployees')}
+        onChangeText={setSearchQuery}
+        value={searchQuery}
+        style={styles.searchbar}
+      />
       <FlatList
         contentContainerStyle={styles.listContent}
-        data={employees}
+        data={filteredEmployees}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
         ListEmptyComponent={() => (
-          <EmptyListPlaceHolder message="No hay empleados registrados." />
+          <EmptyListPlaceHolder message={t('employees.noEmployees')} />
         )}
       />
       <FAB
@@ -65,6 +85,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
+  },
+  searchbar: {
+    marginHorizontal: 16,
+    marginVertical: 8,
   },
   listContent: {
     paddingBottom: 120,
@@ -82,4 +106,3 @@ const mapStateToProps = (state: RootState) => ({
 const connector = connect(mapStateToProps);
 
 export default connector(Employees);
-

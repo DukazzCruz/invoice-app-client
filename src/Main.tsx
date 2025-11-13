@@ -4,6 +4,7 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import Login from './pages/authentication/Login';
 import SignUp from './pages/authentication/SignUp';
@@ -38,29 +39,34 @@ type TabBarIconProps = {
 
 const getTabBarIcon = (routeName: string, color: string, size: number): React.ReactElement => {
   const iconMap: Record<string, string> = {
-    Facturas: 'file-document-outline',
-    Clientes: 'account-group-outline',
-    Items: 'tag-outline',
-    Empleados: 'account-tie-outline',
+    invoices: 'file-document-outline',
+    customers: 'account-group-outline',
+    items: 'tag-outline',
+    employees: 'account-tie-outline',
   };
   const iconName = iconMap[routeName] || 'circle-outline';
   return <MaterialCommunityIcons name={iconName as any} color={color} size={size} />;
 };
 
-const HomeTabs: React.FC = () => (
-  <Tab.Navigator
-    screenOptions={({ route }) => ({
-      headerShown: false,
-      tabBarActiveTintColor: '#1c313a',
-      tabBarIcon: ({ color, size }: TabBarIconProps) => getTabBarIcon(route.name, color, size),
-    })}
-  >
-    <Tab.Screen name="Facturas" component={Invoices} />
-    <Tab.Screen name="Clientes" component={Customers} />
-    <Tab.Screen name="Items" component={Items} />
-    <Tab.Screen name="Empleados" component={Employees} />
-  </Tab.Navigator>
-);
+const HomeTabs: React.FC = () => {
+  const { t } = useTranslation();
+
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarActiveTintColor: '#1c313a',
+        tabBarLabel: t(`screens.${route.name.toLowerCase()}`),
+        tabBarIcon: ({ color, size }: TabBarIconProps) => getTabBarIcon(route.name.toLowerCase(), color, size),
+      })}
+    >
+      <Tab.Screen name="Invoices" component={Invoices} />
+      <Tab.Screen name="Customers" component={Customers} />
+      <Tab.Screen name="Items" component={Items} />
+      <Tab.Screen name="Employees" component={Employees} />
+    </Tab.Navigator>
+  );
+};
 
 const AppStack: React.FC = () => (
   <RootStack.Navigator screenOptions={{ headerShown: false }}>

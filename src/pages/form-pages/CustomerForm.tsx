@@ -6,6 +6,7 @@ import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RouteProp, useRoute } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList, RootState, Customer } from '../../types';
 
 import InnerPageHeader from '../../components/InnerPageHeader';
@@ -35,13 +36,14 @@ const CustomerForm: React.FC<Props> = ({ handleSubmit, dispatch, editCustomer: e
   const insets = useSafeAreaInsets();
   const route = useRoute<CustomerFormRouteProp>();
   const customer = route.params?.customer;
+  const { t } = useTranslation();
 
   const onSubmit = async (values: CustomerFormValues) => {
     const addresses = [values.address_1, values.address_2, values.address_3].filter(
       (address) => address && address.trim().length,
     );
     if (!addresses.length) {
-      Alert.alert('Clientes', 'Agrega al menos una dirección.');
+      Alert.alert(t('screens.customers'), t('validation.required'));
       return;
     }
     const payload: any = { ...values, addresses };
@@ -58,7 +60,7 @@ const CustomerForm: React.FC<Props> = ({ handleSubmit, dispatch, editCustomer: e
       if (!refresh?.success) {
         throw refresh;
       }
-      Alert.alert('Clientes', 'Cliente guardado correctamente.');
+      Alert.alert(t('screens.customers'), t('messages.customerSaved'));
     } catch (error) {
       const err = new ErrorUtils(error);
       err.showAlert();
@@ -68,47 +70,47 @@ const CustomerForm: React.FC<Props> = ({ handleSubmit, dispatch, editCustomer: e
   return (
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       {editCustomerState.isLoading && <Loader />}
-      <InnerPageHeader title="Cliente" />
+      <InnerPageHeader title={t('screens.customer')} />
       <ScrollView contentContainerStyle={styles.content}>
         <Card>
           <Card.Content>
-            <Field name="name" component={TextField} label="Nombre" validate={[required]} />
+            <Field name="name" component={TextField} label={t('fields.name')} validate={[required]} />
             <Field
               name="email"
               component={TextField}
-              label="Email"
+              label={t('fields.email')}
               keyboardType="email-address"
               autoCapitalize="none"
               validate={[email, required]}
             />
-            <Field name="company" component={TextField} label="Empresa" />
+            <Field name="company" component={TextField} label={t('fields.company')} />
             <Field
               name="phone"
               component={TextField}
-              label="Teléfono"
+              label={t('fields.phone')}
               keyboardType="phone-pad"
               validate={[required, phone]}
             />
             <Field
               name="mobile"
               component={TextField}
-              label="Celular"
+              label={t('fields.mobile')}
               keyboardType="phone-pad"
             />
             <Field
               name="address_1"
               component={TextField}
-              label="Dirección 1"
+              label={t('fields.address1')}
               validate={[required]}
             />
-            <Field name="address_2" component={TextField} label="Dirección 2" />
-            <Field name="address_3" component={TextField} label="Dirección 3" />
+            <Field name="address_2" component={TextField} label={t('fields.address2')} />
+            <Field name="address_3" component={TextField} label={t('fields.address3')} />
             <Button
               mode="contained"
               style={styles.button}
               onPress={handleSubmit(onSubmit)}
             >
-              Guardar
+              {t('buttons.save')}
             </Button>
           </Card.Content>
         </Card>

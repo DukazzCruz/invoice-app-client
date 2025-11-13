@@ -8,34 +8,34 @@ export function validatePositiveTimeDifference(issued: Date, due: Date): string 
 /**
  * validates a required field
  */
-export const required = (value: any): string | undefined => (value ? undefined : 'Required');
+export const required = (value: any): string | undefined => (value ? undefined : 'validation.required');
 
 /**
  * validates an email field
  */
 export const email = (value: string | undefined): string | undefined =>
   value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
-    ? 'Invalid email address'
+    ? 'validation.email'
     : undefined;
 
 /**
  * validates a number field
  */
 export const number = (value: any): string | undefined =>
-  value && isNaN(Number(value)) ? 'Should be a number' : undefined;
+  value && isNaN(Number(value)) ? 'validation.number' : undefined;
 
 /**
  * validates an integer field
  */
 export const integer = (value: any): string | undefined =>
-  value && !Number.isInteger(Number(value)) ? 'Should be an integer' : undefined;
+  value && !Number.isInteger(Number(value)) ? 'validation.integer' : undefined;
 
 /**
  * validates a phone field
  */
 export const phone = (value: string | undefined): string | undefined =>
   value && !/^[a-zA-Z0-9]{8,16}$/i.test(value)
-    ? 'Invalid phone number'
+    ? 'validation.phone'
     : undefined;
 
 /**

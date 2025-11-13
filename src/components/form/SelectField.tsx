@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { HelperText, Text } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import { WrappedFieldProps } from 'redux-form';
+import { useTranslation } from 'react-i18next';
 
 interface Option {
   _id: string;
@@ -22,12 +23,13 @@ const SelectField: React.FC<SelectFieldProps> = ({
   input: { value, onChange, ...restInput },
   meta: { touched, error },
   label,
-  placeHolder = 'Selecciona una opción',
+  placeHolder,
   optionsArray = [],
   onValueChange,
   enabled = true,
   ...rest
 }) => {
+  const { t } = useTranslation();
   const hasError = touched && Boolean(error);
 
   const handleChange = (val: any) => {
@@ -48,7 +50,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
           {...restInput}
           {...rest}
         >
-          <Picker.Item label={placeHolder} value={null} />
+          <Picker.Item label={placeHolder || t('selectOption')} value={null} />
           {optionsArray.map((option) => (
             <Picker.Item
               key={option._id}

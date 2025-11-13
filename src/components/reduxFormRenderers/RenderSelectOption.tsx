@@ -2,6 +2,7 @@ import React, { useMemo, useState, useCallback } from 'react';
 import { FlatList, View, StyleSheet, Dimensions } from 'react-native';
 import { HelperText, List, Modal, Portal, Searchbar, TextInput, Button, IconButton, Text } from 'react-native-paper';
 import { WrappedFieldProps } from 'redux-form';
+import { useTranslation } from 'react-i18next';
 
 interface Option {
   _id: string;
@@ -31,6 +32,7 @@ const RenderSelectOption: React.FC<RenderSelectOptionProps> = ({
   onAddNew, 
   ...rest
 }) => {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const [query, setQuery] = useState('');
 
@@ -56,7 +58,7 @@ const RenderSelectOption: React.FC<RenderSelectOptionProps> = ({
       <TextInput
         mode="outlined"
         label={label}
-        placeholder={placeHolder || 'Selecciona una opción'}
+        placeholder={placeHolder || t('selectOption')}
         value={displayText}
         editable={false}
         right={<TextInput.Icon icon="menu-down" onPress={() => setVisible(true)} />}
@@ -76,7 +78,7 @@ const RenderSelectOption: React.FC<RenderSelectOptionProps> = ({
         >
           <View style={styles.modalHeader}>
             <IconButton icon="close" onPress={() => setVisible(false)} />
-            <Text style={styles.modalTitle}>{label || 'Seleccionar'}</Text>
+            <Text style={styles.modalTitle}>{label || t('actions.select')}</Text>
             {onAddNew && (
               <IconButton 
                 icon="plus" 
@@ -88,7 +90,7 @@ const RenderSelectOption: React.FC<RenderSelectOptionProps> = ({
             )}
           </View>
           <Searchbar
-            placeholder="Buscar..."
+            placeholder={t('actions.search')}
             value={query}
             onChangeText={setQuery}
             style={styles.search}

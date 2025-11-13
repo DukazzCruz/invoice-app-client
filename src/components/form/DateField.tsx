@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import { HelperText, TextInput } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 
 interface DateFieldProps {
   input: {
@@ -24,11 +25,12 @@ const DateField: React.FC<DateFieldProps> = ({
   input: { value, onChange, ...restInput },
   meta: { touched, error },
   label,
-  placeholder = 'YYYY/MM/DD',
+  placeholder,
   minimumDate,
   maximumDate,
   ...rest
 }) => {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const parsedValue = value ? new Date(value) : new Date();
   const displayValue = value ? moment(value).format('YYYY/MM/DD') : '';
@@ -48,7 +50,7 @@ const DateField: React.FC<DateFieldProps> = ({
       <TextInput
         mode="outlined"
         label={label}
-        placeholder={placeholder}
+        placeholder={placeholder || t('placeholders.date')}
         value={displayValue}
         editable={false}
         right={<TextInput.Icon icon="calendar" onPress={() => setVisible(true)} />}

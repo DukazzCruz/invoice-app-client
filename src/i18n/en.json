@@ -15,7 +15,12 @@
     "invoices": "Invoices",
     "customers": "Customers",
     "items": "Items",
-    "invoiceForm": "Invoice"
+    "invoiceForm": "Invoice",
+    "employees": "Employees",
+    "item": "Item",
+    "employee": "Employee",
+    "customer": "Customer",
+    "signUp": "Create your account"
   },
   "fields": {
     "date": "Date",
@@ -26,6 +31,7 @@
     "total": "Total",
     "discount": "Discount",
     "subtotal": "Subtotal",
+    "product": "Product",
     "currency": "Currency",
     "description": "Description",
     "email": "Email",
@@ -42,7 +48,19 @@
     "invoiceNumber": "Invoice Number",
     "issued": "Issued",
     "due": "Due",
-    "to": "To"
+    "to": "To",
+    "active": "Active",
+    "inactive": "Inactive",
+    "numberFormat": "Number Format",
+    "dateFormat": "Date Format",
+    "temperatureUnit": "Temperature Unit",
+    "distanceUnit": "Distance Unit",
+    "name": "Name",
+    "role": "Role",
+    "mobile": "Mobile",
+    "address1": "Address 1",
+    "address2": "Address 2",
+    "address3": "Address 3"
   },
   "actions": {
     "add": "Add",
@@ -50,17 +68,78 @@
     "update": "Update",
     "search": "Search",
     "select": "Select",
+    "selectOption": "Select an option",
+    "selectItem": "Select item",
+    "addItem": "Add Item",
     "login": "Login",
     "logout": "Logout",
-    "calculateTotal": "Calculate Total"
+    "calculateTotal": "Calculate Total",
+    "removeItem": "Remove Item"
   },
   "validation": {
     "required": "This field is required",
     "email": "Invalid email address",
+    "number": "Must be a number",
+    "integer": "Must be an integer",
+    "phone": "Invalid phone number",
     "minLength": "Must be at least {{min}} characters",
     "passwordMismatch": "Passwords do not match"
   },
+  "numberFormat": {
+    "en": "English (1,234.56)",
+    "es": "Spanish (1.234,56)"
+  },
+  "units": {
+    "celsius": "Celsius (°C)",
+    "fahrenheit": "Fahrenheit (°F)",
+    "kilometers": "Kilometers (km)",
+    "miles": "Miles (mi)"
+  },
+  "buttons": {
+    "save": "Save",
+    "calculateTotal": "Calculate Total"
+  },
+  "placeholders": {
+    "customer": "Select a customer",
+    "date": "Select date",
+    "discount": "Enter discount",
+    "invoiceNumber": "Invoice number",
+    "selectCustomer": "Select customer",
+    "subtotal": "Subtotal amount",
+    "total": "Total amount",
+    "searchInvoices": "Search invoices...",
+    "searchCustomers": "Search customers...",
+    "searchItems": "Search items...",
+    "searchEmployees": "Search employees..."
+  },
+  "headers": {
+    "selectCustomer": "Select Customer"
+  },
   "messages": {
-    "profileUpdated": "Profile updated successfully"
+    "profileUpdated": "Profile updated successfully",
+    "customerSaved": "Customer saved successfully"
+  },
+  "alerts": {
+    "invoiceSentByEmail": "Invoice sent by email",
+    "invoicesListUpdated": "Invoices list updated"
+  },
+  "app": {
+    "appName": "Invoice App"
+  },
+  "employees": {
+    "noEmployees": "No employees found"
+  },
+  "languages": {
+    "english": "English",
+    "spanish": "Spanish"
+  },
+  "emptyMessages": {
+    "noItems": "No items registered.",
+    "noCustomers": "No customers registered.",
+    "noInvoices": "No invoices registered."
+  },
+  "modals": {
+    "products": "Products",
+    "addProduct": "Add product"
   }
 }

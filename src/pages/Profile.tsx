@@ -14,9 +14,11 @@ import RenderSelectOption from '../components/reduxFormRenderers/RenderSelectOpt
 import { editUser, getUser, logoutUser } from '../actions/auth.actions';
 import { ErrorUtils } from '../utils/error.utils';
 import { currencies } from '../utils/currencies.utils';
-import { phone, required } from '../utils/redux.form.utils';
 import LanguageSelector from '../components/LanguageSelector';
 import { RootState } from '../types';
+import { getCurrentL10nConfig } from '../utils/l10n.utils';
+import { useL10n } from '../contexts/L10nContext';
+import { useValidationRules } from '../hooks/useValidationRules';
 
 interface User {
   _id?: string;
@@ -27,6 +29,8 @@ interface User {
   address?: string;
   base_currency?: string;
   language?: string;
+  numberFormat?: 'en' | 'es';
+  dateFormat?: string;
 }
 
 interface ProfileFormValues {
@@ -35,6 +39,8 @@ interface ProfileFormValues {
   address: string;
   base_currency: string;
   language: string;
+  numberFormat?: 'en' | 'es';
+  dateFormat?: string;
 }
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -42,7 +48,21 @@ type Props = InjectedFormProps<ProfileFormValues> & PropsFromRedux;
 
 const Profile: React.FC<Props> = ({ handleSubmit, dispatch, editUser: editUserState }) => {
   const insets = useSafeAreaInsets();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { updateConfig } = useL10n();
+  const { required: requiredRule, phone: phoneRule } = useValidationRules();
+
+  // L10n options
+  const numberFormatOptions = [
+    { _id: 'en', name: t('numberFormat.en') },
+    { _id: 'es', name: t('numberFormat.es') },
+  ];
+
+  const dateFormatOptions = [
+    { _id: 'MM/DD/YYYY', name: 'MM/DD/YYYY' },
+    { _id: 'DD/MM/YYYY', name: 'DD/MM/YYYY' },
+    { _id: 'YYYY-MM-DD', name: 'YYYY-MM-DD' },
+  ];
   
   const onSubmit = async (values: ProfileFormValues) => {
     try {
@@ -51,6 +71,18 @@ const Profile: React.FC<Props> = ({ handleSubmit, dispatch, editUser: editUserSt
         throw response;
       }
       await dispatch(getUser() as any);
+
+      // Update l10n configuration
+      const l10nConfig = {
+        locale: values.language === 'es' ? 'es-ES' : 'en-US',
+        dateFormat: (values.dateFormat || 'MM/DD/YYYY') as string,
+        numberFormat: (values.numberFormat || 'en') as 'en' | 'es',
+        currencyFormat: (values.numberFormat || 'en') as 'en' | 'es',
+        temperatureUnit: 'celsius' as const,
+        distanceUnit: 'km' as const,
+      };
+      updateConfig(l10nConfig);
+
       Alert.alert(t('screens.profile'), t('messages.profileUpdated'));
     } catch (error) {
       const err = new ErrorUtils(error);
@@ -63,7 +95,7 @@ const Profile: React.FC<Props> = ({ handleSubmit, dispatch, editUser: editUserSt
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View style={styles.container}>
       <InnerPageHeader title={t('screens.profile')} />
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <Card style={styles.card}>
@@ -79,7 +111,7 @@ const Profile: React.FC<Props> = ({ handleSubmit, dispatch, editUser: editUserSt
               label={t('fields.phone')}
               component={TextField}
               placeholder={t('fields.phonePlaceholder')}
-              validate={[required, phone]}
+              validate={[requiredRule, phoneRule]}
               keyboardType="phone-pad"
             />
             <Field
@@ -96,12 +128,26 @@ const Profile: React.FC<Props> = ({ handleSubmit, dispatch, editUser: editUserSt
               component={RenderSelectOption}
               optionsArray={currencies}
               placeholder={t('fields.currencyPlaceholder')}
-              validate={[required]}
+              validate={[requiredRule]}
             />
             <View style={styles.languageFieldContainer}>
               <Text style={styles.languageLabel}>{t('fields.language')}</Text>
               <LanguageSelector />
             </View>
+            <Field
+              name="numberFormat"
+              label={t('fields.numberFormat')}
+              component={RenderSelectOption}
+              optionsArray={numberFormatOptions}
+              placeholder={t('selectOption')}
+            />
+            <Field
+              name="dateFormat"
+              label={t('fields.dateFormat')}
+              component={RenderSelectOption}
+              optionsArray={dateFormatOptions}
+              placeholder={t('selectOption')}
+            />
           </Card.Content>
         </Card>
         <Button
@@ -161,6 +207,8 @@ const mapStateToProps = (state: RootState) => ({
     address: state.userReducer.getUser.userDetails.address,
     base_currency: state.userReducer.getUser.userDetails.base_currency,
     language: state.userReducer.getUser.userDetails.language,
+    numberFormat: state.userReducer.getUser.userDetails.numberFormat || 'en',
+    dateFormat: state.userReducer.getUser.userDetails.dateFormat || 'MM/DD/YYYY',
   },
 });
 

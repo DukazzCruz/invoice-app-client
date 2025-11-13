@@ -15,7 +15,12 @@
     "invoices": "Facturas",
     "customers": "Clientes",
     "items": "Artículos",
-    "invoiceForm": "Factura"
+    "invoiceForm": "Factura",
+    "employees": "Empleados",
+    "item": "Artículo",
+    "employee": "Empleado",
+    "customer": "Cliente",
+    "signUp": "Crea tu cuenta"
   },
   "fields": {
     "date": "Fecha",
@@ -26,6 +31,7 @@
     "total": "Total",
     "discount": "Descuento",
     "subtotal": "Subtotal",
+    "product": "Producto",
     "currency": "Moneda",
     "description": "Descripción",
     "email": "Correo",
@@ -42,7 +48,19 @@
     "invoiceNumber": "Número de Factura",
     "issued": "Emitida",
     "due": "Vencimiento",
-    "to": "Para"
+    "to": "Para",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "numberFormat": "Formato de Números",
+    "dateFormat": "Formato de Fecha",
+    "temperatureUnit": "Unidad de Temperatura",
+    "distanceUnit": "Unidad de Distancia",
+    "name": "Nombre",
+    "role": "Rol",
+    "mobile": "Celular",
+    "address1": "Dirección 1",
+    "address2": "Dirección 2",
+    "address3": "Dirección 3"
   },
   "actions": {
     "add": "Agregar",
@@ -50,17 +68,78 @@
     "update": "Actualizar",
     "search": "Buscar",
     "select": "Seleccionar",
+    "selectOption": "Seleccionar una opción",
+    "selectItem": "Seleccionar artículo",
+    "addItem": "Agregar Artículo",
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
-    "calculateTotal": "Calcular Total"
+    "calculateTotal": "Calcular Total",
+    "removeItem": "Eliminar Elemento"
   },
   "validation": {
     "required": "Este campo es obligatorio",
     "email": "Correo electrónico inválido",
+    "number": "Debe ser un número",
+    "integer": "Debe ser un número entero",
+    "phone": "Número de teléfono inválido",
     "minLength": "Debe tener al menos {{min}} caracteres",
     "passwordMismatch": "Las contraseñas no coinciden"
   },
+  "numberFormat": {
+    "en": "Inglés (1,234.56)",
+    "es": "Español (1.234,56)"
+  },
+  "units": {
+    "celsius": "Celsius (°C)",
+    "fahrenheit": "Fahrenheit (°F)",
+    "kilometers": "Kilómetros (km)",
+    "miles": "Millas (mi)"
+  },
+  "buttons": {
+    "save": "Guardar",
+    "calculateTotal": "Calcular Total"
+  },
+  "placeholders": {
+    "customer": "Seleccionar cliente",
+    "date": "Seleccionar fecha",
+    "discount": "Ingresar descuento",
+    "invoiceNumber": "Número de factura",
+    "selectCustomer": "Seleccionar cliente",
+    "subtotal": "Monto subtotal",
+    "total": "Monto total",
+    "searchInvoices": "Buscar facturas...",
+    "searchCustomers": "Buscar clientes...",
+    "searchItems": "Buscar artículos...",
+    "searchEmployees": "Buscar empleados..."
+  },
+  "headers": {
+    "selectCustomer": "Seleccionar Cliente"
+  },
   "messages": {
-    "profileUpdated": "Perfil actualizado correctamente"
+    "profileUpdated": "Perfil actualizado correctamente",
+    "customerSaved": "Cliente guardado correctamente"
+  },
+  "alerts": {
+    "invoiceSentByEmail": "Factura enviada por email",
+    "invoicesListUpdated": "Lista de facturas actualizada"
+  },
+  "app": {
+    "appName": "Aplicación de Facturas"
+  },
+  "employees": {
+    "noEmployees": "No se encontraron empleados"
+  },
+  "languages": {
+    "english": "Inglés",
+    "spanish": "Español"
+  },
+  "emptyMessages": {
+    "noItems": "No hay productos registrados.",
+    "noCustomers": "No hay clientes registrados.",
+    "noInvoices": "No hay facturas registradas."
+  },
+  "modals": {
+    "products": "Productos",
+    "addProduct": "Agregar producto"
   }
 }

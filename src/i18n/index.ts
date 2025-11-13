@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
+import { languageDetector } from '../utils/languageDetector';
 import en from './en.json';
 import es from './es.json';
 
@@ -10,15 +10,13 @@ const resources = {
 };
 
 i18n
-  .use(LanguageDetector)
+  .use(languageDetector)
   .use(initReactI18next)
   .init({
     resources,
     fallbackLng: 'en',
-    interpolation: { escapeValue: false },
-    detection: {
-      order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-      caches: ['localStorage', 'cookie'],
+    interpolation: {
+      escapeValue: false,
     },
   });
 

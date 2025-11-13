@@ -22,7 +22,6 @@ import renderSelectOption from '../../components/reduxFormRenderers/RenderSelect
 import { getCurrency } from '../../utils/currencies.utils';
 import InnerPageHeader from '../../components/InnerPageHeader';
 import { RootStackParamList, RootState, Invoice, InvoiceItem } from '../../types';
-import { useTranslation } from 'react-i18next';
 import { t } from 'i18next';
 
 // Prevent input clearing by keeping default dates stable across renders
@@ -167,7 +166,6 @@ class InvoiceForm extends Component<InvoiceFormProps> {
   render() {
     const { handleSubmit, editInvoice, getItems, getCustomers, subtotalValue, change, getUser: { userDetails }, navigation } = this.props;
     const currency = getCurrency(userDetails.base_currency);
-    const { t } = useTranslation();
 
     return (
       <View style={styles.container}>
@@ -222,6 +220,7 @@ class InvoiceForm extends Component<InvoiceFormProps> {
             optionsArray={getItems.itemsList || []}
             change={change}
             currency={currency}
+            onAddNewItem={() => navigation.navigate('ItemForm')}
             component={renderItemsTextInputArray}
           />
           <Card style={styles.card}>
