@@ -1,9 +1,12 @@
 import { ApiResponse, ApiError } from '../types';
+import Constants from 'expo-constants';
 
 const DEFAULT_TIMEOUT = 8000;
 const BASE_URL =
   process.env.EXPO_PUBLIC_API_URL?.trim() ||
-  'http://127.0.0.1:3333';
+  // Fallback to app.config.ts extra.apiUrl (computed local IP)
+  ((Constants?.expoConfig as any)?.extra?.apiUrl as string | undefined) ||
+  'http://10.0.0.91:3333';
 
 const withTimeout = <T>(promise: Promise<T>, timeout: number = DEFAULT_TIMEOUT): Promise<T> =>
   Promise.race([

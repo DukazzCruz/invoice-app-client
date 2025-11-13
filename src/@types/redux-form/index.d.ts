@@ -13,4 +13,5 @@ declare module 'redux-form' {
   export function reduxForm<FormData = any>(config: any): <P = any>(component: any) => any;
   export function formValueSelector<FormData = any>(form: string): any;
   export const change: any;
+  export const reducer: any;
 }

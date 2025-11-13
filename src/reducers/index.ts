@@ -5,6 +5,7 @@ import itemReducer from './item.reducer';
 import customerReducer from './customer.reducer';
 import invoiceReducer from './invoice.reducer';
 import employeeReducer from './employee.reducer';
+import { reducer as formReducer } from 'redux-form';
 
 const reducers = {
   authReducer,
@@ -13,6 +14,7 @@ const reducers = {
   itemReducer,
   invoiceReducer,
   employeeReducer,
+  form: formReducer,
 };
 
 const appReducer = combineReducers(reducers);
@@ -20,7 +22,7 @@ const appReducer = combineReducers(reducers);
 export type RootState = ReturnType<typeof appReducer>;
 
 const rootReducer = (state: RootState | undefined, action: AnyAction): RootState => {
-  if (action.type === 'USER_LOGOUT_SUCCESS') {
+  if (action.type === 'USER_LOGGED_OUT_SUCCESS') {
     state = undefined;
   }
   return appReducer(state, action);

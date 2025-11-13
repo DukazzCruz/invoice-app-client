@@ -1,5 +1,6 @@
-import { Body, Card, CardItem, Icon, Item, Left, Right, Text, View } from 'native-base';
 import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Card, IconButton, Text, Button } from 'react-native-paper';
 import { Field, WrappedFieldArrayProps } from 'redux-form';
 import renderTextInput from './RenderTextInput';
 import renderSelectOption from './RenderSelectOption';
@@ -18,32 +19,29 @@ interface RenderItemsInputArrayProps extends WrappedFieldArrayProps<any> {
 const renderItemsInputArray: React.FC<RenderItemsInputArrayProps> = (field) => {
   const { fields, change, optionsArray = [], meta: { error, touched }, currency } = field;
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       {fields.map((item: any, index: number) => (
-        <Card key={index}>
-          <CardItem>
-            <Body>
-              <Field
-                name={`${item}.item`}
-                component={renderSelectOption}
-                optionsArray={optionsArray}
-                iosHeader="Select Item"
-                placeHolder={'Select an item...'}
-                placeholder={'Item'}
-                validate={[required]}
-                onChange={(value: any) => {
-                  // Calculate product subtotal based on new product
-                  const quantity = Number((fields.get(index) as any)?.quantity || 0);
-                  const itemValue = optionsArray.find((e) => e._id === value);
-                  if (quantity && itemValue) {
-                    change(`${item}.subtotal`, String(quantity * itemValue.price));
-                  }
-                }}
-              />
-            </Body>
-          </CardItem>
-          <CardItem>
-            <Left>
+        <Card key={index} style={styles.card}>
+          <Card.Content>
+            <Field
+              name={`${item}.item`}
+              component={renderSelectOption}
+              optionsArray={optionsArray}
+              iosHeader="Select Item"
+              placeHolder={'Select an item...'}
+              placeholder={'Item'}
+              validate={[required]}
+              onChange={(value: any) => {
+                const quantity = Number((fields.get(index) as any)?.quantity || 0);
+                const itemValue = optionsArray.find((e) => e._id === value);
+                if (quantity && itemValue) {
+                  change(`${item}.subtotal`, String(quantity * itemValue.price));
+                }
+              }}
+            />
+          </Card.Content>
+          <Card.Content style={styles.row}>
+            <View style={styles.quantity}>
               <Field
                 name={`${item}.quantity`}
                 keyboardType={'decimal-pad'}
@@ -53,7 +51,6 @@ const renderItemsInputArray: React.FC<RenderItemsInputArrayProps> = (field) => {
                 component={renderTextInput}
                 validate={[required, integer]}
                 onChange={(value: any) => {
-                  // Calculate product subtotal based on new quantity
                   const currentItem = (fields.get(index) as any)?.item;
                   const itemValue = optionsArray.find((e) => e._id === currentItem);
                   if (itemValue) {
@@ -61,9 +58,8 @@ const renderItemsInputArray: React.FC<RenderItemsInputArrayProps> = (field) => {
                   }
                 }}
               />
-            </Left>
-            <Body />
-            <Right>
+            </View>
+            <View style={styles.subtotal}>
               <Field
                 name={`${item}.subtotal`}
                 keyboardType={'decimal-pad'}
@@ -75,28 +71,21 @@ const renderItemsInputArray: React.FC<RenderItemsInputArrayProps> = (field) => {
                 normalize={(value: any) => normalizeCurrency(value)}
                 component={renderTextInput}
               />
-              {(touched && error) && <Text style={{ color: '#f32013' }}>{error}</Text>}
-            </Right>
-          </CardItem>
-          <CardItem button light onPress={() => fields.remove(index)}>
-            <Left>
-              <Icon active name="ios-trash" />
-              <Body>
-                <Text>Remove Item</Text>
-              </Body>
-            </Left>
-          </CardItem>
+              {(touched && error) && <Text style={styles.error}>{error}</Text>}
+            </View>
+          </Card.Content>
+          <Card.Actions>
+            <IconButton icon="trash-can" onPress={() => fields.remove(index)} accessibilityLabel="Remove item" />
+            <Text>Remove Item</Text>
+          </Card.Actions>
         </Card>
       ))}
-      <Card>
-        <CardItem button light onPress={() => fields.push({})}>
-          <Left>
-            <Icon active name="ios-add" />
-            <Body>
-              <Text>Add Item</Text>
-            </Body>
-          </Left>
-        </CardItem>
+      <Card style={styles.addCard}>
+        <Card.Actions>
+          <Button icon="plus" onPress={() => fields.push({})}>
+            Add Item
+          </Button>
+        </Card.Actions>
       </Card>
     </View>
   );
@@ -104,3 +93,33 @@ const renderItemsInputArray: React.FC<RenderItemsInputArrayProps> = (field) => {
 
 export default renderItemsInputArray;
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  card: {
+    marginBottom: 12,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  quantity: {
+    flex: 1,
+  },
+  subtotal: {
+    flex: 1,
+  },
+  error: {
+    color: '#f32013',
+    marginTop: 4,
+    textAlign: 'right',
+  },
+  addCard: {
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    borderColor: '#bbb',
+  },
+});

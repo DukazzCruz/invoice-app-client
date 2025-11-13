@@ -55,7 +55,7 @@ export const editCustomer = (payload: EditCustomerPayload) => {
       if (response.success) {
         dispatch({
           type: 'EDIT_CUSTOMER_SUCCESS',
-          payload: response.responseBody,
+          payload: (response.responseBody as any)?.customer,
         });
         return response;
       } else {
@@ -70,4 +70,3 @@ export const editCustomer = (payload: EditCustomerPayload) => {
     }
   };
 };
-

@@ -12,6 +12,8 @@ export class ErrorUtils {
     this.errorText = 'Something went wrong';
     if (e.message) {
       this.errorText = e.message;
+    } else if (e.responseBody && e.responseBody.error && e.responseBody.error.message) {
+      this.errorText = e.responseBody.error.message;
     } else if (e.responseBody && e.responseBody.message) {
       this.errorText = e.responseBody.message;
     } else if (e.responseBody) {

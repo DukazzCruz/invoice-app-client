@@ -13,7 +13,7 @@ export interface Currency {
  */
 export const getCurrency = (id: string | undefined): string | undefined => {
   if (id) {
-    const currency = currencies.find((c) => c._id === id);
+    const currency = currencies.find((c) => c._id === id.toUpperCase());
     return currency?.symbol_native;
   }
   return undefined;

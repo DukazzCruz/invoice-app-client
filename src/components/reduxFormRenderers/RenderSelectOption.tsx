@@ -1,5 +1,7 @@
-import React from 'react';
-import { Icon, Item, Label, Picker, Text } from 'native-base';
+import React, { useMemo } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { HelperText, Text } from 'react-native-paper';
 import { WrappedFieldProps } from 'redux-form';
 
 interface Option {
@@ -22,39 +24,76 @@ interface RenderSelectOptionProps extends WrappedFieldProps {
  */
 const RenderSelectOption: React.FC<RenderSelectOptionProps> = ({
   meta: { touched, error },
-  input: { onChange, value, ...inputProps },
+  input: { onChange, value },
   placeHolder,
   label,
   optionsArray = [],
   onChange: customOnChange,
   ...pickerProps
 }) => {
-  const handleChange = (val: any) => {
-    onChange(val);
+  const hasError = touched && Boolean(error);
+  const selectedValue = value ?? '';
+
+  const pickerItems = useMemo(() => {
+    const items = optionsArray.map((option) => (
+      <Picker.Item key={option._id} value={option._id} label={option.name} />
+    ));
+    return [
+      <Picker.Item
+        key="__placeholder"
+        value=""
+        label={placeHolder || 'Selecciona una opción'}
+      />,
+      ...items,
+    ];
+  }, [optionsArray, placeHolder]);
+
+  const handleChange = (val: string) => {
+    const nextValue = val === '' ? null : val;
+    onChange(nextValue);
     if (typeof customOnChange === 'function') {
-      customOnChange(val);
+      customOnChange(nextValue);
     }
   };
 
   return (
-    <Item picker>
-      {label && <Label>{label}</Label>}
-      <Picker
-        selectedValue={value}
-        iosIcon={<Icon name="arrow-down" />}
-        onValueChange={handleChange}
-        {...inputProps}
-        {...pickerProps}
-      >
-        <Picker.Item label={placeHolder || 'Selecciona una opción'} value={null} />
-        {optionsArray.map((option, i) => (
-          <Picker.Item key={i} value={option._id} label={option.name} />
-        ))}
-      </Picker>
-      {touched && error && <Text style={{ color: '#f32013' }}>{error}</Text>}
-    </Item>
+    <View style={styles.container}>
+      {label ? <Text style={styles.label}>{label}</Text> : null}
+      <View style={[styles.pickerWrapper, hasError && styles.pickerError]}>
+        <Picker
+          selectedValue={selectedValue}
+          onValueChange={handleChange}
+          dropdownIconColor="#555"
+          {...pickerProps}
+        >
+          {pickerItems}
+        </Picker>
+      </View>
+      <HelperText type="error" visible={hasError}>
+        {error}
+      </HelperText>
+    </View>
   );
 };
 
-export default RenderSelectOption;
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 12,
+  },
+  label: {
+    fontSize: 14,
+    marginBottom: 4,
+    color: '#444',
+  },
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: '#bbb',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  pickerError: {
+    borderColor: '#f32013',
+  },
+});
 
+export default RenderSelectOption;

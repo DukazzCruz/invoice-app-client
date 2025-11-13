@@ -23,6 +23,10 @@ import { getCurrency } from '../../utils/currencies.utils';
 import InnerPageHeader from '../../components/InnerPageHeader';
 import { RootStackParamList, RootState, Invoice, InvoiceItem } from '../../types';
 
+// Prevent input clearing by keeping default dates stable across renders
+const DEFAULT_ISSUED = new Date();
+const DEFAULT_DUE = new Date();
+
 type InvoiceFormRouteProp = RouteProp<RootStackParamList, 'InvoiceForm'>;
 
 interface InvoiceFormValues {
@@ -111,13 +115,13 @@ class InvoiceForm extends Component<InvoiceFormProps> {
       if (!response || !response.success) {
         throw response;
       } else {
+        const invoiceResp = (response as any)?.responseBody?.invoice;
         const paymentParams = {
-          invoice: (response as any).responseBody.value._id,
+          invoice: invoiceResp?._id,
           status: false,
-          paid_on: null,
           amount_paid: 0,
-          amount_due: (response as any).responseBody.value.total,
-        };
+          amount_due: invoiceResp?.total,
+        } as any;
         response = await (this.props as any).dispatch(sendInvoiceByEmail(paymentParams));
         if (!response || !response.success) {
           throw response;
@@ -358,8 +362,8 @@ const mapStateToProps = (state: RootState, props: any) => {
     initialValues = {
       number: `INV${newNumber || '00000001'}`,
       customer: null,
-      issued: new Date(),
-      due: new Date(),
+      issued: DEFAULT_ISSUED,
+      due: DEFAULT_DUE,
       items: [{ item: null, quantity: '0', subtotal: '0' }],
       subtotal: '0',
       discount: '0',
@@ -398,4 +402,3 @@ export default compose(
     updateUnregisteredFields: true,
   }),
 )(InvoiceForm) as React.ComponentType;
-

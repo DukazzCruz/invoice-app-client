@@ -60,7 +60,7 @@ export const editEmployee = (payload: EditEmployeePayload) => {
       if (response.success) {
         dispatch({
           type: 'EDIT_EMPLOYEE_SUCCESS',
-          payload: response.responseBody as { employee?: Employee; [key: string]: any },
+          payload: (response.responseBody as any)?.employee,
         });
         return response;
       } else {
@@ -89,7 +89,7 @@ export const updateEmployee = (id: string, payload: UpdateEmployeePayload) => {
       if (response.success) {
         dispatch({
           type: 'UPDATE_EMPLOYEE_SUCCESS',
-          payload: response.responseBody as { employee?: Employee; [key: string]: any },
+          payload: (response.responseBody as any)?.employee,
         });
         return response;
       } else {
@@ -133,4 +133,3 @@ export const deleteEmployee = (id: string) => {
     }
   };
 };
-

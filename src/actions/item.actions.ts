@@ -51,7 +51,7 @@ export const editItem = (payload: EditItemPayload) => {
       if (response.success) {
         dispatch({
           type: 'EDIT_ITEM_SUCCESS',
-          payload: response.responseBody,
+          payload: (response.responseBody as any)?.item,
         });
         return response;
       } else {
