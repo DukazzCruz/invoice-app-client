@@ -151,7 +151,7 @@
     }
   },
   "app": {
-    "appName": "Aplicación de Facturas"
+    "appName": "FactuApp"
   },
   "employees": {
     "noEmployees": "No se encontraron empleados"

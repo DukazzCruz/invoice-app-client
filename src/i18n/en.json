@@ -7,7 +7,10 @@
     "edit": "Edit",
     "delete": "Delete",
     "confirm": "Confirm",
-    "back": "Back"
+    "back": "Back",
+    "loading": "Loading...",
+    "loadingData": "Loading data...",
+    "ok": "OK"
   },
   "screens": {
     "home": "Home",
@@ -117,7 +120,8 @@
   },
   "messages": {
     "profileUpdated": "Profile updated successfully",
-    "customerSaved": "Customer saved successfully"
+    "customerSaved": "Customer saved successfully",
+    "employeeSaved": "Employee saved successfully"
   },
   "alerts": {
     "invoiceSentByEmail": "Invoice sent by email",
@@ -141,5 +145,26 @@
   "modals": {
     "products": "Products",
     "addProduct": "Add product"
+  },
+  "auth": {
+    "login": {
+      "email": "Email",
+      "password": "Password",
+      "loginButton": "Login",
+      "noAccount": "Don't have an account? Sign up"
+    },
+    "signup": {
+      "title": "Create your account",
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "company": "Company",
+      "phone": "Phone",
+      "address": "Address",
+      "baseCurrency": "Base Currency",
+      "selectCurrency": "Select currency",
+      "createAccount": "Create account",
+      "haveAccount": "Already have an account? Login"
+    }
   }
 }

@@ -166,4 +166,3 @@ export default compose(
     updateUnregisteredFields: true,
   }),
 )(SignUp) as React.ComponentType;
-

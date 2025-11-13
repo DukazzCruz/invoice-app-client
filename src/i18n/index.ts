@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { languageDetector } from '../utils/languageDetector';
+import { initializeValidationTranslations } from '../utils/redux.form.utils';
 import en from './en.json';
 import es from './es.json';
 
@@ -19,5 +20,14 @@ i18n
       escapeValue: false,
     },
   });
+
+// Initialize validation translations when i18n is ready
+i18n.on('initialized', () => {
+  initializeValidationTranslations(i18n.t);
+});
+
+i18n.on('languageChanged', () => {
+  initializeValidationTranslations(i18n.t);
+});
 
 export default i18n;

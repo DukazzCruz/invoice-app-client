@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { HelperText, TextInput } from 'react-native-paper';
 import { WrappedFieldProps } from 'redux-form';
+import { TextInput as RNTextInput } from 'react-native';
 
 interface TextFieldProps extends WrappedFieldProps {
   label?: string;
@@ -15,9 +16,12 @@ interface TextFieldProps extends WrappedFieldProps {
   numberOfLines?: number;
   style?: any;
   onValueChange?: (value: string) => void;
+  returnKeyType?: 'done' | 'go' | 'next' | 'search' | 'send';
+  onSubmitEditing?: () => void;
+  blurOnSubmit?: boolean;
 }
 
-const TextField: React.FC<TextFieldProps> = ({
+const TextField = forwardRef<RNTextInput, TextFieldProps>(({
   input: { onChange, value, ...restInput },
   meta: { touched, error },
   label,
@@ -32,8 +36,11 @@ const TextField: React.FC<TextFieldProps> = ({
   numberOfLines,
   style,
   onValueChange,
+  returnKeyType,
+  onSubmitEditing,
+  blurOnSubmit,
   ...rest
-}) => {
+}, ref) => {
   const hasError = touched && Boolean(error);
 
   const handleChange = (text: string) => {
@@ -46,6 +53,7 @@ const TextField: React.FC<TextFieldProps> = ({
   return (
     <>
       <TextInput
+        ref={ref}
         mode="outlined"
         label={label}
         placeholder={placeholder}
@@ -61,6 +69,9 @@ const TextField: React.FC<TextFieldProps> = ({
         textAlign={textAlign}
         right={icon ? <TextInput.Icon icon={icon} /> : undefined}
         error={hasError}
+        returnKeyType={returnKeyType}
+        onSubmitEditing={onSubmitEditing}
+        blurOnSubmit={blurOnSubmit}
         {...restInput}
         {...rest}
       />
@@ -69,7 +80,9 @@ const TextField: React.FC<TextFieldProps> = ({
       </HelperText>
     </>
   );
-};
+});
+
+TextField.displayName = 'TextField';
 
 export default TextField;
 
