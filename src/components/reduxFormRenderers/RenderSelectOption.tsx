@@ -58,7 +58,7 @@ const RenderSelectOption: React.FC<RenderSelectOptionProps> = ({
       <TextInput
         mode="outlined"
         label={label}
-        placeholder={placeHolder || t('selectOption')}
+        placeholder={placeHolder || t('actions.selectOption')}
         value={displayText}
         editable={false}
         right={<TextInput.Icon icon="menu-down" onPress={() => setVisible(true)} />}

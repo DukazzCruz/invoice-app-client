@@ -10,7 +10,7 @@ const Logo: React.FC = () => {
         style={styles.image}
         source={require('../assets/images/react-logo.png')}
       />
-      <Text style={styles.title}>{t('appName')}</Text>
+      <Text style={styles.title}>{t('app.appName')}</Text>
     </View>
   );
 };

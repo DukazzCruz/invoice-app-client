@@ -92,8 +92,8 @@ const EmployeeForm: React.FC<Props> = ({ editEmployee: editEmployeeState, update
         throw refresh;
       }
 
-      Alert.alert('Empleados', 'Empleado guardado correctamente.', [
-        { text: 'OK', onPress: () => navigation.goBack() },
+      Alert.alert(t('screens.employees'), t('messages.employeeSaved'), [
+        { text: t('common.ok'), onPress: () => navigation.goBack() },
       ]);
     } catch (error) {
       const err = new ErrorUtils(error);

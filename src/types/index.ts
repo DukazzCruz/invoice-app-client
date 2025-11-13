@@ -9,7 +9,11 @@ export interface User {
   address: string;
   base_currency: string;
   numberFormat?: 'en' | 'es';
+  currencyFormat?: 'en' | 'es';
   dateFormat?: string;
+  locale?: string;
+  temperatureUnit?: 'celsius' | 'fahrenheit';
+  distanceUnit?: 'km' | 'miles';
   createdAt?: string;
   updatedAt?: string;
 }

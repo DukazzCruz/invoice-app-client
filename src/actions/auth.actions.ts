@@ -10,6 +10,12 @@ interface RegisterPayload {
   address: string;
   base_currency: string;
   company?: string;
+  numberFormat?: 'en' | 'es';
+  currencyFormat?: 'en' | 'es';
+  dateFormat?: string;
+  locale?: string;
+  temperatureUnit?: 'celsius' | 'fahrenheit';
+  distanceUnit?: 'km' | 'miles';
 }
 
 interface LoginPayload {
@@ -17,11 +23,17 @@ interface LoginPayload {
   password: string;
 }
 
-interface EditUserPayload {
+export interface EditUserPayload {
   company?: string;
   phone?: string;
   address?: string;
   base_currency?: string;
+  numberFormat?: 'en' | 'es';
+  currencyFormat?: 'en' | 'es';
+  dateFormat?: string;
+  locale?: string;
+  temperatureUnit?: 'celsius' | 'fahrenheit';
+  distanceUnit?: 'km' | 'miles';
 }
 
 type AppDispatch = Dispatch<AuthAction | UserAction>;

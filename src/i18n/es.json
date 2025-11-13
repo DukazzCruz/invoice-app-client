@@ -7,7 +7,10 @@
     "edit": "Editar",
     "delete": "Eliminar",
     "confirm": "Confirmar",
-    "back": "Atrás"
+    "back": "Atrás",
+    "loading": "Cargando...",
+    "loadingData": "Cargando datos...",
+    "ok": "OK"
   },
   "screens": {
     "home": "Inicio",
@@ -74,7 +77,8 @@
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
     "calculateTotal": "Calcular Total",
-    "removeItem": "Eliminar Elemento"
+    "removeItem": "Eliminar artículo",
+    "addLine": "Agregar línea"
   },
   "validation": {
     "required": "Este campo es obligatorio",
@@ -117,11 +121,34 @@
   },
   "messages": {
     "profileUpdated": "Perfil actualizado correctamente",
-    "customerSaved": "Cliente guardado correctamente"
+    "customerSaved": "Cliente guardado correctamente",
+    "employeeSaved": "Empleado guardado correctamente"
   },
   "alerts": {
     "invoiceSentByEmail": "Factura enviada por email",
     "invoicesListUpdated": "Lista de facturas actualizada"
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar sesión",
+      "email": "Email",
+      "password": "Contraseña",
+      "loginButton": "Ingresar",
+      "noAccount": "¿No tienes cuenta? Regístrate"
+    },
+    "signup": {
+      "title": "Crea tu cuenta",
+      "name": "Nombre",
+      "email": "Email",
+      "password": "Contraseña",
+      "company": "Compañía",
+      "phone": "Teléfono",
+      "address": "Dirección",
+      "baseCurrency": "Moneda base",
+      "selectCurrency": "Selecciona una moneda",
+      "createAccount": "Crear cuenta",
+      "haveAccount": "¿Ya tienes cuenta? Inicia sesión"
+    }
   },
   "app": {
     "appName": "Aplicación de Facturas"

@@ -46,7 +46,7 @@ const Employees: React.FC<Props> = ({ getEmployees, dispatch }) => {
       title={item.name}
       subtitle={item.role}
       right={item.email}
-      rightSub={item.active ? t('active') : t('inactive')}
+      rightSub={item.active ? t('fields.active') : t('fields.inactive')}
       handleClickEvent={() =>
         navigation.navigate('EmployeeForm', { employee: item })
       }

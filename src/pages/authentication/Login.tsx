@@ -6,6 +6,7 @@ import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
 import { AuthStackParamList, RootState } from '../../types';
 
 import Logo from '../../components/Logo';
@@ -27,6 +28,7 @@ type Props = InjectedFormProps<LoginFormValues> & PropsFromRedux;
 
 const Login: React.FC<Props> = ({ handleSubmit, loginUser: loginState, dispatch }) => {
   const navigation = useNavigation<NavigationProp>();
+  const { t } = useTranslation();
 
   const onSubmit = async (values: LoginFormValues) => {
     try {
@@ -49,7 +51,7 @@ const Login: React.FC<Props> = ({ handleSubmit, loginUser: loginState, dispatch 
           <Field
             name="email"
             component={TextField}
-            label="Email"
+            label={t('auth.login.email')}
             keyboardType="email-address"
             autoCapitalize="none"
             validate={[email, required]}
@@ -57,7 +59,7 @@ const Login: React.FC<Props> = ({ handleSubmit, loginUser: loginState, dispatch 
           <Field
             name="password"
             component={TextField}
-            label="Contraseña"
+            label={t('auth.login.password')}
             secureTextEntry
             validate={[required]}
           />
@@ -66,10 +68,10 @@ const Login: React.FC<Props> = ({ handleSubmit, loginUser: loginState, dispatch 
             style={styles.button}
             onPress={handleSubmit(onSubmit)}
           >
-            Ingresar
+            {t('auth.login.loginButton')}
           </Button>
           <Button onPress={() => navigation.navigate('SignUp')}>
-            <Text>¿No tienes cuenta? Regístrate</Text>
+            <Text>{t('auth.login.noAccount')}</Text>
           </Button>
         </Card.Content>
       </Card>

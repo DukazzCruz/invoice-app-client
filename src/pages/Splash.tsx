@@ -4,6 +4,7 @@ import { ActivityIndicator, Text } from 'react-native-paper';
 import { connect, ConnectedProps } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList, RootState } from '../types';
 
 import Logo from '../components/Logo';
@@ -20,6 +21,7 @@ type Props = PropsFromRedux;
 
 const Splash: React.FC<Props> = ({ dispatch }) => {
   const navigation = useNavigation<NavigationProp>();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const loadData = async () => {
@@ -34,7 +36,10 @@ const Splash: React.FC<Props> = ({ dispatch }) => {
         if (!success) {
           throw responses;
         }
-        navigation.replace('HomeTabs');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'HomeTabs' }],
+        });
       } catch (error) {
         const err = new ErrorUtils(error);
         err.showAlert();
@@ -49,7 +54,7 @@ const Splash: React.FC<Props> = ({ dispatch }) => {
     <View style={styles.container}>
       <Logo />
       <ActivityIndicator style={styles.loader} size="large" />
-      <Text>Cargando datos...</Text>
+      <Text>{t('common.loadingData')}</Text>
     </View>
   );
 };

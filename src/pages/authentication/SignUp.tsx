@@ -6,6 +6,7 @@ import { compose } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
 import { AuthStackParamList, RootState } from '../../types';
 
 import InnerPageHeader from '../../components/InnerPageHeader';
@@ -16,6 +17,7 @@ import { registerNewUser } from '../../actions/auth.actions';
 import { ErrorUtils } from '../../utils/error.utils';
 import { currencies } from '../../utils/currencies.utils';
 import { email, phone, required } from '../../utils/redux.form.utils';
+import { detectRegionalSettings } from '../../utils/regional.utils';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList>;
 
@@ -34,14 +36,36 @@ type Props = InjectedFormProps<SignUpFormValues> & PropsFromRedux;
 
 const SignUp: React.FC<Props> = ({ handleSubmit, registerUser, dispatch }) => {
   const navigation = useNavigation<NavigationProp>();
+  const { t } = useTranslation();
 
   const onSubmit = async (values: SignUpFormValues) => {
     try {
-      const response = await dispatch(registerNewUser(values) as any);
+      // Detectar configuración regional automáticamente
+      const regionalSettings = detectRegionalSettings();
+      console.log('🔍 SignUp: Detected regional settings', regionalSettings);
+
+      // Combinar los valores del formulario con la configuración regional
+      const registrationData = {
+        ...values,
+        // Usar la moneda seleccionada por el usuario o la detectada automáticamente
+        base_currency: values.base_currency || regionalSettings.baseCurrency,
+        // Configuración regional detectada automáticamente
+        numberFormat: regionalSettings.numberFormat,
+        currencyFormat: regionalSettings.currencyFormat,
+        dateFormat: regionalSettings.dateFormat,
+        locale: regionalSettings.locale,
+        temperatureUnit: regionalSettings.temperatureUnit,
+        distanceUnit: regionalSettings.distanceUnit,
+      };
+
+      console.log('📝 SignUp: Registration data with regional settings', registrationData);
+      const response = await dispatch(registerNewUser(registrationData) as any);
       if (!response.success) {
         throw response;
       }
+      console.log('✅ SignUp: User registered successfully with regional settings');
     } catch (error) {
+      console.error('❌ SignUp: Error during registration:', error);
       const err = new ErrorUtils(error);
       err.showAlert();
     }
@@ -50,14 +74,14 @@ const SignUp: React.FC<Props> = ({ handleSubmit, registerUser, dispatch }) => {
   return (
     <View style={styles.container}>
       {registerUser.isLoading && <Loader />}
-      <InnerPageHeader title="Crea tu cuenta" />
+      <InnerPageHeader title={t('auth.signup.title')} />
       <Card style={styles.card}>
         <Card.Content>
-          <Field name="name" component={TextField} label="Nombre" validate={[required]} />
+          <Field name="name" component={TextField} label={t('auth.signup.name')} validate={[required]} />
           <Field
             name="email"
             component={TextField}
-            label="Email"
+            label={t('auth.signup.email')}
             keyboardType="email-address"
             autoCapitalize="none"
             validate={[email, required]}
@@ -65,41 +89,41 @@ const SignUp: React.FC<Props> = ({ handleSubmit, registerUser, dispatch }) => {
           <Field
             name="password"
             component={TextField}
-            label="Contraseña"
+            label={t('auth.signup.password')}
             secureTextEntry
             validate={[required]}
           />
-          <Field name="company" component={TextField} label="Compañía" />
+          <Field name="company" component={TextField} label={t('auth.signup.company')} />
           <Field
             name="phone"
             component={TextField}
-            label="Teléfono"
+            label={t('auth.signup.phone')}
             keyboardType="phone-pad"
             validate={[required, phone]}
           />
           <Field
             name="address"
             component={TextField}
-            label="Dirección"
+            label={t('auth.signup.address')}
             validate={[required]}
           />
           <Field
             name="base_currency"
             component={SelectField}
-            label="Moneda base"
+            label={t('auth.signup.baseCurrency')}
             optionsArray={currencies}
             validate={[required]}
-            placeHolder="Selecciona una moneda"
+            placeholder={t('auth.signup.selectCurrency')}
           />
           <Button
             mode="contained"
             style={styles.button}
             onPress={handleSubmit(onSubmit)}
           >
-            Crear cuenta
+            {t('auth.signup.createAccount')}
           </Button>
           <Button onPress={() => navigation.goBack()}>
-            <Text>¿Ya tienes cuenta? Inicia sesión</Text>
+            <Text>{t('auth.signup.haveAccount')}</Text>
           </Button>
         </Card.Content>
       </Card>

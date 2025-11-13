@@ -50,7 +50,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
           {...restInput}
           {...rest}
         >
-          <Picker.Item label={placeHolder || t('selectOption')} value={null} />
+          <Picker.Item label={placeHolder || t('actions.selectOption')} value={null} />
           {optionsArray.map((option) => (
             <Picker.Item
               key={option._id}

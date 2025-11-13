@@ -58,7 +58,7 @@ const renderItemsInputArray: React.FC<RenderItemsInputArrayProps> = ({
                 keyboardType={'decimal-pad'}
                 placeholder={'0'}
                 textAlign={'right'}
-                label={'Quantity'}
+                label={t('fields.quantity')}
                 component={renderTextInput}
                 validate={[required, integer]}
                 onChange={(value: any) => {
@@ -94,7 +94,7 @@ const renderItemsInputArray: React.FC<RenderItemsInputArrayProps> = ({
       <Card style={styles.addCard}>
         <Card.Actions>
           <Button icon="plus" onPress={() => fields.push({})}>
-            Agregar línea
+            {t('actions.addLine')}
           </Button>
         </Card.Actions>
       </Card>
